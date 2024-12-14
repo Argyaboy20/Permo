@@ -1,0 +1,7 @@
+{
+  "name": "PERMO",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

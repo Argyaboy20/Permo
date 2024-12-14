@@ -1,0 +1,66 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      PERMO
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<body>
+
+  <div class="container">
+    <div class="header">
+      <ion-img src="https://i.ibb.co.com/r55nhRL/Permo-logo.jpg" alt="Permo Logo"
+        style="height: 150px; width: 150px; margin: auto;"></ion-img>
+      <h1>
+        PERTANIAN MOBILE
+      </h1>
+    </div>
+
+    <div class=" form-group">
+      <label for="username">
+        <ion-icon aria-hidden="true" name="person-outline"></ion-icon>
+        Username
+      </label>
+      <ion-input type="username" placeholder="Masukkan username di sini" value="">
+      </ion-input>
+    </div>
+
+    <div class="form-group">
+      <label for="password">
+        Password
+      </label>
+      <div class="input-group">
+        <ion-input type="password" placeholder="Ketik di sini" value="">
+          <ion-input-password-toggle slot="end"></ion-input-password-toggle>
+        </ion-input>
+      </div>
+      <div class="note">Lupa password/username?</div>
+      <a href="lupaakun">
+        Klik di sini
+      </a>
+    </div>
+
+    <button class="btn-primary">
+      Masuk
+    </button>
+
+    <div class="footer">
+      <button class="btn-secondary">
+        <label for="akun?">
+          Belum punya akun?
+        </label>
+        <a href="daftar">
+          Daftar Sekarang
+        </a>
+      </button>
+    </div>
+  </div>
+
+  <div class="help-button">
+    <i class="fas fa-question">
+      <ion-icon name="help-outline"></ion-icon>
+    </i>
+    Bantuan
+  </div>
+</body>
