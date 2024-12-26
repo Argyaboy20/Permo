@@ -1,22 +1,28 @@
 <body>
-  <div class="container">
-      <div class="header">
-          <h1>KONFIRMASI AKUN</h1>
-          <p>Kami akan mengirimkan informasi akun ke alamat email Anda</p>
-      </div>
-      <form>
-          <div class="form-group">
-              <label for="email">Email*</label>
-              <div class="input-icon email">
-                  <i class="fas fa-envelope"></i>
-                  <input type="email" id="email" placeholder="Ketik alamat email">
-              </div>
-          </div>
-          <button type="submit" class="btn"><i></i> Kirim Informasi Akun</button>
-      </form>
-      <div class="footer">
-          <p>Sudah punya akun? <a href="#">Masuk ke Akun</a></p>
-      </div>
-  </div>
-</body>
+    <div class="container">
+        <div class="header">
+            <h1>KONFIRMASI AKUN</h1>
+            <p>Kami akan mengirimkan informasi akun ke alamat email Anda</p>
+        </div>
 
+        <form>
+            <div class="form-group">
+                <label for="email">Email*</label>
+                <div class="input-icon email">
+                    <input type="email" id="email" placeholder="Ketik alamat email">
+                </div>
+            </div>
+
+            <ion-button type="submit" class="btn" id="present-alert">KIRIM INFORMASI AKUN</ion-button>
+            <ion-alert 
+                trigger="present-alert" 
+                header="EMAIL KOSONG!" 
+                message="Harap isi email yang dibutuhkan" 
+                [buttons]="alertButtons"></ion-alert>
+        </form>
+
+        <div class="footer">
+            <p>Sudah punya akun? <a href="/tabs/tab1">Masuk ke Akun</a></p>
+        </div>
+    </div>
+</body>

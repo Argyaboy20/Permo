@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./daftar.page.scss'],
 })
 export class DaftarPage implements OnInit {
-
+  alertButtons = ["OK"]; //constructor fitur alert
   constructor() { }
 
   ngOnInit() {

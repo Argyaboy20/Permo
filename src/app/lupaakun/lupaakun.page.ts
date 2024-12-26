@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./lupaakun.page.scss'],
 })
 export class LupaakunPage implements OnInit {
-
+  alertButtons = ["OK"];
   constructor() { }
 
   ngOnInit() {

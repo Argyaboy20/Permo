@@ -24,7 +24,7 @@
       </label>
       <ion-input type="username" placeholder="Masukkan username di sini" value="">
       </ion-input>
-    </div>
+    </div> 
 
     <div class="form-group">
       <label for="password">
@@ -35,32 +35,32 @@
           <ion-input-password-toggle slot="end"></ion-input-password-toggle>
         </ion-input>
       </div>
+
       <div class="note">Lupa password/username?</div>
-      <a href="lupaakun">
+      <a class="hyper" href="lupaakun">
         Klik di sini
       </a>
     </div>
 
-    <button class="btn-primary">
-      Masuk
-    </button>
+    <ion-button type="submit" class="masuk" id="present-alert" href="/tabs/tab2">MASUK</ion-button>
+            <ion-alert 
+                trigger="present-alert" 
+                header="DATA KOSONG!" 
+                message="Harap isi username dan password yang dibutuhkan" 
+                [buttons]="alertButtons"></ion-alert>
 
     <div class="footer">
-      <button class="btn-secondary">
         <label for="akun?">
           Belum punya akun?
         </label>
         <a href="daftar">
           Daftar Sekarang
         </a>
-      </button>
     </div>
   </div>
 
   <div class="help-button">
-    <i class="fas fa-question">
       <ion-icon name="help-outline"></ion-icon>
-    </i>
     Bantuan
   </div>
 </body>

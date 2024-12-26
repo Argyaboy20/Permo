@@ -8,7 +8,7 @@ body {
 
 .container {
     max-width: 400px;
-    margin: 60px auto;
+    margin: 66px auto;
     background-color: #2a393e;
     padding: 20px;
     border-radius: 8px;
@@ -104,47 +104,34 @@ body {
 }
 
 .form-group .note {
-    font-size: 10px;
+    font-size: 11px;
     color: #ffff;
     margin: 1px;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: #fff;
+.form-group .hyper {
+    font-size: 10px;
+}
+
+.masuk {
+    color: #FFFFFF;
     padding: 10px;
     border: none;
     border-radius: 5px;
     width: 100%;
-    cursor: pointer;
-}
-
-.btn-secondary {
-    background-color: none;
-    color: #000000;
-    padding: 10px;
-    border: none;
-    border-radius: 0px;
-    width: 100%;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
-
-.btn-secondary:hover {
-    background-color: none;
+    margin-top: -10px;
 }
 
 .footer {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 0px;
+    font-size: 12px;
 }
 
 .footer a {
     color: #00ff00;
-    cursor: pointer;
     text-decoration: none;
+    font-size: 12px;
 }
 
 .footer a:hover {
