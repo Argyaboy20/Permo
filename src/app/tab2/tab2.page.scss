@@ -5,10 +5,75 @@ body {
     padding: 0;
 }
 
+.jdl {
+    font-weight: bold;
+    margin-left: 645px;
+    margin-top: -35px;
+}
+
 .seacrhbar {
     background-color: #324851;
 }
 
-.src img {
-    margin: 0px ;
+.gambar {
+    margin-top: -10px;
+}
+
+.card {
+    width: 400px;
+    margin-top: 40px;
+    margin-left: 250px;
+    background-color: #324851 ;
+    box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
+    border: 1px solid #FFFFFF;
+}
+
+.judul {
+    font-weight: bold;
+}
+
+.content {
+    font-family: 'Lucida Sans';
+    text-align: justify;
+    color: #FFFFFF
+}
+
+.jelajah {
+    background-color: #007bff;
+    color: #FFFFFF;
+    font-family:'Franklin Gothic Medium';
+}
+
+.crd {
+    width: 400px;
+    margin-left: 750px;
+    margin-top: -208px;
+    background-color: #324851;
+    box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
+    border: 1px solid #FFFFFF;
+}
+
+.ttl {
+    font-weight: bold;
+}
+
+.cntnt {
+    font-family: 'Lucida Sans';
+    text-align: justify;
+    color: #FFFFFF;
+}
+
+.jljh {
+    background-color: #007bff;
+    color: #FFFFFF;
+    font-family:'Franklin Gothic Medium';
+}
+
+.kartu {
+    width: 400px;
+    margin-left: 480px;
+    margin-top: 70px;
+    background-color: #324851;
+    box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
+    border: 1px solid #FFFFFF;
 }

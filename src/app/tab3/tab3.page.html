@@ -1,17 +1,18 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      PERMO
+    <ion-icon class="icn" name="rainy-outline"></ion-icon>
+    <ion-title class="pred">
+      PREDIKSI CUACA
     </ion-title>
   </ion-toolbar>
+
+  <body>
+    <ion-fab>
+      <ion-fab-button href="/tabs/tab2">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
+  
+  </body>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="PREDIKSI CUACA"></app-explore-container>
-</ion-content>

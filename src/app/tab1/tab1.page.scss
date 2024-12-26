@@ -137,19 +137,3 @@ body {
 .footer a:hover {
     text-decoration: underline;
 }
-
-.help-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #28a745;
-    color: #000000;
-    padding: 15px;
-    border-radius: 40%;
-    text-align: center;
-    cursor: pointer;
-}
-
-.help-button:hover {
-    background-color: #218838;
-}

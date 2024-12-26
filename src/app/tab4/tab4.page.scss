@@ -22,18 +22,14 @@ body {
     border-bottom: 1px solid #ddd;
 }
 
-.list-item .text {
-    flex-grow: 1;
-}
-
-.list-item .arrow {
-    color: #00ff00;
-}
-
-.footer a {
+.footer {
     text-align: center;
     padding: 20px 0;
     font-weight: bold;
+    margin-top: -20px;
+}
+
+.footer a {
+    text-decoration: none;
     color: #00ff00;
-    margin: auto;
 }
