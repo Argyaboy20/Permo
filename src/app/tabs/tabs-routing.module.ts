@@ -31,14 +31,14 @@ const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'halamanutama',
+        redirectTo: '/tabs/halamanutama',
         pathMatch: 'full'
       }
     ]
   },
   {
     path: '',
-    redirectTo: 'halamanutama',
+    redirectTo: '/tabs/halamanutama',
     pathMatch: 'full'
   }
 ];
