@@ -3,6 +3,7 @@ body {
     background-color: #324851;
     margin: 0;
     padding: 0;
+    background-image: url(/assets/background.png);
 }
 .container {
     max-width: 530px;
@@ -23,7 +24,7 @@ body {
     margin-bottom: -5px;
 }
 .header a {
-    color: #007bff;
+    color: #00ff00;
     text-decoration: none;
 }
 
