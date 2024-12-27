@@ -28,6 +28,10 @@ const routes: Routes = [
   {
     path: 'ilmutanah',
     loadChildren: () => import('./ilmutanah/ilmutanah.module').then( m => m.IlmutanahPageModule)
+  },
+  {
+    path: 'halamanutama',
+    loadChildren: () => import('./halamanutama/halamanutama.module').then( m => m.HalamanutamaPageModule)
   }
 
 ];
