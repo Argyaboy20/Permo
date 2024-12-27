@@ -21,7 +21,15 @@ const routes: Routes = [
   {
     path: 'lupaakun',
     loadChildren: () => import('./lupaakun/lupaakun.module').then( m => m.LupaakunPageModule)
+  },  {
+    path: 'kamus',
+    loadChildren: () => import('./kamus/kamus.module').then( m => m.KamusPageModule)
+  },
+  {
+    path: 'ilmutanah',
+    loadChildren: () => import('./ilmutanah/ilmutanah.module').then( m => m.IlmutanahPageModule)
   }
+
 ];
 @NgModule({
   imports: [
