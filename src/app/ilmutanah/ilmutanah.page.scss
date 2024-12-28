@@ -1,28 +1,42 @@
+body {
+  background-color: #324851;
+  margin-top: 80px;
+}
+
 .ea {
-    height: 30px;
-    width: 30px;
-    margin-left: 10px;
-    margin-bottom: -20px;
+  height: 30px;
+  width: 30px;
+  margin-top: 15px;
+  margin-left: 10px;
+  margin-bottom: 10px;
 }
 
 .ilmu {
-    margin-left: 30px;
-    margin-top: -10px;
+  margin-left: 30px;
+  margin-top: -40px;
+  margin-bottom: 15px;
+}
+
+.search {
+  width: 1310px;
+  margin-left: 60px;
 }
 
 ion-fab-button::part(native) {
-    background-color: #b7f399;
-    border-radius: 15px;
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-    color: black;
-    margin-left: 20px;
-    margin-top: 10px;
-  }
-  
-  ion-fab-button::part(native):hover::after {
-    background-color: #a3e681;
-  }
-  
-  ion-fab-button::part(native):active::after {
-    background-color: #87d361;
-  }
+  height: 45px;
+  width: 45px;
+  background-color: #b7f399;
+  border-radius: 15px;
+  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+  color: black;
+  margin-left: 10px;
+  margin-top: 0px;
+}
+
+ion-fab-button::part(native):hover::after {
+  background-color: #a3e681;
+}
+
+ion-fab-button::part(native):active::after {
+  background-color: #87d361;
+}
