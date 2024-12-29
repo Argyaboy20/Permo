@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { PostProvider } from '../../provider/post-provider';
+import jsSHA from 'jssha';
 
 @Component({
   selector: 'app-daftar',
@@ -10,13 +11,20 @@ import { PostProvider } from '../../provider/post-provider';
 })
 export class DaftarPage implements OnInit {
 
-  username: string = '';
-  email: string = '';
-  password: string = '';
-  konfirmasi: string = '';
+  public username: string = '';
+  public email: string = '';
+  public password: string = '';
+  public hashedPassword: string = '';
+  public konfirmasi: string = '';
 
+  //pengamanan password
+  hashPassword() {
+    const shaObj = new jsSHA("SHA-256", "TEXT");
+    shaObj.update(this.password);
+    this.hashedPassword = shaObj.getHash("HEX");
+    console.log('Hashed Password:', this.hashedPassword);
+  }
 
-  alertButtons = ["OK"]; //constructor fitur alert
   constructor(
     private router: Router,
     public toastController: ToastController,
@@ -30,31 +38,53 @@ export class DaftarPage implements OnInit {
   }
 
   async addRegister() {
-    if (this.username == '') {
+
+    //validasi keseluruhan data
+    if (this.username == ''  && this.email == '' && this.password == '' && this.konfirmasi == '') {
+      const toast = await this.toastController.create({
+        message: 'Harap isi data yang dibutuhkan',
+        duration: 2000,
+      });
+      toast.present();
+    } 
+
+    //validasi username
+    else if (this.username == '') {
       const toast = await this.toastController.create({
         message: 'Username harus diisi',
         duration: 2000,
       });
       toast.present();
-    } else if (this.email == '') {
+    } 
+    
+    //validasi input email
+    else if (this.email == '') {
       const toast = await this.toastController.create({
         message: 'Email harus diisi',
         duration: 2000,
       });
       toast.present();
-    } else if (this.password == '') {
+    } 
+
+    //validasi input password
+    else if (this.password == '') {
       const toast = await this.toastController.create({
         message: 'Password harus diisi',
         duration: 2000,
       });
       toast.present();
-    } else if (this.konfirmasi == '') {
+    } 
+
+    //validasi input konfirmasi password
+    else if (this.konfirmasi == '') {
       const toast = await this.toastController.create({
         message: 'Konfirmasi Password harus diisi',
         duration: 2000,
       });
       toast.present();
-    } else {
+    } 
+    
+    else {
       let body = {
         username: this.username,
         email: this.email,
