@@ -9,18 +9,19 @@ import jsSHA from 'jssha';
   templateUrl: './daftar.page.html',
   styleUrls: ['./daftar.page.scss'],
 })
+
 export class DaftarPage implements OnInit {
 
   public username: string = '';
   public email: string = '';
-  public password: string = '';
+  public pass: string = '';
   public hashedPassword: string = '';
   public konfirmasi: string = '';
 
   //pengamanan password
   hashPassword() {
     const shaObj = new jsSHA("SHA-256", "TEXT");
-    shaObj.update(this.password);
+    shaObj.update(this.pass);
     this.hashedPassword = shaObj.getHash("HEX");
     console.log('Hashed Password:', this.hashedPassword);
   }
@@ -40,13 +41,13 @@ export class DaftarPage implements OnInit {
   async addRegister() {
 
     //validasi keseluruhan data
-    if (this.username == ''  && this.email == '' && this.password == '' && this.konfirmasi == '') {
+    if (this.username == '' && this.email == '' && this.pass == '' && this.konfirmasi == '') {
       const toast = await this.toastController.create({
         message: 'Harap isi data yang dibutuhkan',
         duration: 2000,
       });
       toast.present();
-    } 
+    }
 
     //validasi username
     else if (this.username == '') {
@@ -55,8 +56,8 @@ export class DaftarPage implements OnInit {
         duration: 2000,
       });
       toast.present();
-    } 
-    
+    }
+
     //validasi input email
     else if (this.email == '') {
       const toast = await this.toastController.create({
@@ -64,16 +65,16 @@ export class DaftarPage implements OnInit {
         duration: 2000,
       });
       toast.present();
-    } 
+    }
 
     //validasi input password
-    else if (this.password == '') {
+    else if (this.pass == '') {
       const toast = await this.toastController.create({
         message: 'Password harus diisi',
         duration: 2000,
       });
       toast.present();
-    } 
+    }
 
     //validasi input konfirmasi password
     else if (this.konfirmasi == '') {
@@ -82,31 +83,22 @@ export class DaftarPage implements OnInit {
         duration: 2000,
       });
       toast.present();
-    } 
-    
+    }
+
     else {
       let body = {
         username: this.username,
         email: this.email,
-        password: this.password,
+        password: this.pass,
         konfirmasi: this.konfirmasi,
-        aksi: 'add_register',
+        aksi: 'add_register'
       };
       this.postPvdr.postData(body, 'action.php').subscribe(async (data) => {
         var alertpesan = data.msg;
         if (data.success) {
-          this.router.navigate(['href="/tabs/tab2"']);
-          const toast = await this.toastController.create({
-            message: 'Pendaftaran Sukses',
-            duration: 1500,
-          });
-          toast.present();
+          window.location.href = '/tabs/tab2';
         } else {
-          const toast = await this.toastController.create({
-            message: alertpesan,
-            duration: 2000,
-          });
-          toast.present(); // Added missing toast.present()
+          alert('Registrasi gagal. Mohon dicek datanya kembali');
         }
       });
     }

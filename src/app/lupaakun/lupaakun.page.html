@@ -7,17 +7,13 @@
 
         <form>
             <div class="form-group">
-                <label for="email">Email*</label>
-                <div class="input-icon email">
-                    <input type="email" id="email" placeholder="Ketik alamat email">
-                </div>
+                <ion-textarea [(ngModel)]="email" fill="solid" label="Email" labelPlacement="floating" fill="outline"
+                    helperText="Masukkan email yang valid" errorText="Email tidak valid" ngModel emaiL
+                    placeholder="Ketik email di sini" type="email"></ion-textarea>
             </div>
 
             <ion-button type="submit" class="btn" id="present-alert">KIRIM INFORMASI AKUN</ion-button>
-            <ion-alert 
-                trigger="present-alert" 
-                header="EMAIL KOSONG!" 
-                message="Harap isi email yang dibutuhkan" 
+            <ion-alert trigger="present-alert" header="EMAIL KOSONG!" message="Harap isi email yang dibutuhkan"
                 [buttons]="alertButtons"></ion-alert>
         </form>
 

@@ -8,38 +8,34 @@
         </div>
 
         <div class="form-group">
-            <label for="username">Username*</label>
-            <div class="input-icon">
-                <input [(ngModel)]="username" placeholder="Ketik username di sini" type="text" />
-            </div>
+            <ion-textarea [(ngModel)]="username" label="Username" labelPlacement="floating" 
+            fill="outline" placeholder="Ketik username di sini" type="text"></ion-textarea>
         </div>
 
         <div class="form-group">
-            <label for="email">Email*</label>
-            <div class="input-icon">
-                <input [(ngModel)]="email" placeholder="Ketik email di sini" type="email" />
-            </div>
-            <div class="note">Harap masukkan email yang valid</div>
+            <ion-textarea [(ngModel)]="email" fill="solid" label="Email" labelPlacement="floating" 
+            fill="outline" helperText="Masukkan email yang valid" errorText="Email tidak valid" ngModel email
+            placeholder="Ketik email di sini" type="email"></ion-textarea>
         </div>
 
         <div class="form-group">
-            <label for="password">Password*</label>
-            <div class="input-icon">
-                <input [(ngModel)]="password" placeholder="Ketik password di sini" type="text" />
-            </div>
+            <ion-textarea class="pwd" [(ngModel)]="pass" label="Password" labelPlacement="floating" 
+            fill="outline" placeholder="Ketik password di sini" type="text"
+            [counter]="true" maxlength="30"></ion-textarea>
         </div>
 
         <div class="form-group">
-            <label for="konfirmasi">Konfirmasi Ulang Password*</label>
-            <div class="input-icon">
-                <input [(ngModel)]="konfirmasi" placeholder="Ketik secara lengkap dan pastikan sesuai" type="text" />
-            </div>
+            <ion-textarea class="ko"  [(ngModel)]="konfirmasi" label="Konfirmasi Password" labelPlacement="floating" 
+            fill="outline" placeholder="Masukkan secara lengkap dan sesuai" type="text"
+            [counter]="true" maxlength="30"></ion-textarea>
         </div>
 
-        <ion-button type="submit" class="btn" (click)="addRegister()">
-            DAFTAR
-        </ion-button>
-
+        <div padding>
+            <ion-button type="submit" class="btn" (click)="addRegister()" >
+                DAFTAR
+            </ion-button>
+        </div>
+        
         <div class="footer">
             <p>Sudah punya akun? <a href="/tabs/tab1">Masuk</a></p>
         </div>

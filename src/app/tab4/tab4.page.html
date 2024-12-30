@@ -1,35 +1,53 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
+    <ion-title class="tit">
       PERMO
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<body>
-  <div class="header"></div>
-  <div class="container">
+<ion-fab>
+  <ion-fab-button href="/tabs/tab2">
+    <ion-icon name="arrow-back-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
 
-    <div class="list-item">
-      <div class="text">Informasi Akun</div>
-    </div>
+<ion-content class="container">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles"
+      refreshingText="Memperbarui...">
+    </ion-refresher-content>
+  </ion-refresher>
 
-    <div class="list-item">
-      <div class="text">Ganti Password</div>
-    </div>
+  <div class=infoakun>
+    <h1 class="inf">INFORMASI AKUN </h1>
+    <ion-list lines="full" *ngFor="let daftar of daftars" (ionInfinite)="loadData($event)">
+      <ion-item>
+        <ion-label>Username : </ion-label>
+        <ion-label>{{daftar.username}}</ion-label>
+      </ion-item>
 
-    <div class="list-item">
-      <div class="text">Ganti PIN</div>
-    </div>
+      <ion-item>
+        <ion-label>Email : </ion-label>
+        <ion-label>{{daftar.email}}</ion-label>
+      </ion-item>
 
-    <div class="list-item">
-      <div class="text">Bantuan</div>
-    </div>
+      <ion-item>
+        <ion-label>Password : </ion-label>
+        <ion-label class="lbl">{{daftar.konfirmasi}}
+        </ion-label>
+        <ion-button fill="clear" slot="end" aria-label="Show/hide">
+          <ion-icon slot="icon-only" name="eye" aria-hidden="true"></ion-icon>
+        </ion-button>
+      </ion-item>
 
+    </ion-list>
   </div>
+
+
   <div class="footer">
-      <a href=".">
-        TUTUP AKUN
-      </a>
+    <a href=".">
+      TUTUP AKUN
+    </a>
   </div>
-</body>
+</ion-content>
