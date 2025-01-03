@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-
 import { DaftarPage } from './daftar.page';
+import { Tab2Page } from '../tab2/tab2.page';
 
 const routes: Routes = [
   {

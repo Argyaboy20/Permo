@@ -7,6 +7,8 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
+import { Tab2Page } from './tab2/tab2.page';
+
 import { HttpClientModule } from '@angular/common/http';
 import { PostProvider } from '../provider/post-provider';
 
@@ -22,6 +24,6 @@ import { PostProvider } from '../provider/post-provider';
     PostProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, Tab2Page],
 })
-export class AppModule {}
+export class AppModule {}

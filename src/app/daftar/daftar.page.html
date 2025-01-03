@@ -7,36 +7,32 @@
             <h1>Pendaftaran Akun Baru</h1>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" [formGroup]="registerForm.getForm()">
             <ion-textarea [(ngModel)]="username" label="Username" labelPlacement="floating" 
-            fill="outline" placeholder="Ketik username di sini" type="text"></ion-textarea>
+            fill="outline" placeholder="Ketik username di sini" type="text" formControlName="username"></ion-textarea>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" [formGroup]="registerForm.getForm()">
             <ion-textarea [(ngModel)]="email" fill="solid" label="Email" labelPlacement="floating" 
-            fill="outline" helperText="Masukkan email yang valid" errorText="Email tidak valid" ngModel email
-            placeholder="Ketik email di sini" type="email"></ion-textarea>
+            fill="outline" placeholder="Ketik email di sini" type="email" formControlName="email"></ion-textarea>
         </div>
 
-        <div class="form-group">
-            <ion-textarea class="pwd" [(ngModel)]="pass" label="Password" labelPlacement="floating" 
-            fill="outline" placeholder="Ketik password di sini" type="text"
-            [counter]="true" maxlength="30"></ion-textarea>
+        <div class="form-group" [formGroup]="registerForm.getForm()">
+            <ion-textarea [(ngModel)]="pass" label="Password" labelPlacement="floating" 
+            fill="outline" placeholder="Ketik password di sini" type="text" formControlName="pass" ></ion-textarea>
         </div>
 
-        <div class="form-group">
-            <ion-textarea class="ko"  [(ngModel)]="konfirmasi" label="Konfirmasi Password" labelPlacement="floating" 
-            fill="outline" placeholder="Masukkan secara lengkap dan sesuai" type="text"
-            [counter]="true" maxlength="30"></ion-textarea>
+        <div class="form-group" [formGroup]="registerForm.getForm()">
+            <ion-textarea  [(ngModel)]="konfirmasi" label="Konfirmasi Password" labelPlacement="floating" 
+            fill="outline" placeholder="Masukkan secara lengkap dan sesuai" type="text" formControlName="konfirmasi"></ion-textarea>
         </div>
 
-        <div padding>
-            <ion-button type="submit" class="btn" (click)="addRegister()" >
+            <ion-button type="submit" class="btn" (click)="addRegister()">
                 DAFTAR
             </ion-button>
-        </div>
+
         
-        <div class="footer">
+        <div class="footer">    
             <p>Sudah punya akun? <a href="/tabs/tab1">Masuk</a></p>
         </div>
     </div>

@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { PostProvider } from '../../provider/post-provider';
-import jsSHA from 'jssha';
+import { RegisterPageForm } from './form/register.page.form';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-daftar',
@@ -12,35 +13,31 @@ import jsSHA from 'jssha';
 
 export class DaftarPage implements OnInit {
 
-  public username: string = '';
-  public email: string = '';
-  public pass: string = '';
-  public hashedPassword: string = '';
-  public konfirmasi: string = '';
-
-  //pengamanan password
-  hashPassword() {
-    const shaObj = new jsSHA("SHA-256", "TEXT");
-    shaObj.update(this.pass);
-    this.hashedPassword = shaObj.getHash("HEX");
-    console.log('Hashed Password:', this.hashedPassword);
-  }
+  username: string = '';
+  email: string = '';
+  pass: string = '';
+  konfirmasi: string = '';
+  registerForm!: RegisterPageForm;
 
   constructor(
     private router: Router,
     public toastController: ToastController,
     private postPvdr: PostProvider,
-
+    private formBuilder: FormBuilder,
   ) {
 
   }
 
   ngOnInit() {
+    this.createForm();
+  }
+
+  private createForm() {
+    this.registerForm = new RegisterPageForm(this.formBuilder);
   }
 
   async addRegister() {
-
-    //validasi keseluruhan data
+    /*validasi keseluruhan data*/
     if (this.username == '' && this.email == '' && this.pass == '' && this.konfirmasi == '') {
       const toast = await this.toastController.create({
         message: 'Harap isi data yang dibutuhkan',
@@ -48,8 +45,7 @@ export class DaftarPage implements OnInit {
       });
       toast.present();
     }
-
-    //validasi username
+    /*validasi username*/
     else if (this.username == '') {
       const toast = await this.toastController.create({
         message: 'Username harus diisi',
@@ -57,8 +53,7 @@ export class DaftarPage implements OnInit {
       });
       toast.present();
     }
-
-    //validasi input email
+    /*validasi input email*/
     else if (this.email == '') {
       const toast = await this.toastController.create({
         message: 'Email harus diisi',
@@ -66,8 +61,7 @@ export class DaftarPage implements OnInit {
       });
       toast.present();
     }
-
-    //validasi input password
+    /*validasi input password*/
     else if (this.pass == '') {
       const toast = await this.toastController.create({
         message: 'Password harus diisi',
@@ -75,17 +69,14 @@ export class DaftarPage implements OnInit {
       });
       toast.present();
     }
-
-    //validasi input konfirmasi password
+    /*validasi input konfirmasi password*/
     else if (this.konfirmasi == '') {
       const toast = await this.toastController.create({
         message: 'Konfirmasi Password harus diisi',
         duration: 2000,
       });
       toast.present();
-    }
-
-    else {
+    } else {
       let body = {
         username: this.username,
         email: this.email,
@@ -93,14 +84,11 @@ export class DaftarPage implements OnInit {
         konfirmasi: this.konfirmasi,
         aksi: 'add_register'
       };
-      this.postPvdr.postData(body, 'action.php').subscribe(async (data) => {
-        var alertpesan = data.msg;
+      this.postPvdr.postData(body, 'action.php').subscribe(async data => {
         if (data.success) {
-          window.location.href = '/tabs/tab2';
-        } else {
-          alert('Registrasi gagal. Mohon dicek datanya kembali');
+          this.router.navigate(['/tab2']);
         }
-      });
+      })
     }
   }
 }
