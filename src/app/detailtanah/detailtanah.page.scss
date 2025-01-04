@@ -1,0 +1,33 @@
+.tnh {
+    margin-left: 50px;
+}
+
+.h3 {
+    margin-left: 40px;
+    font-family:'Lucida Sans';
+}
+
+.p {
+    margin-left: 55px;
+    margin-top: 0px;
+    font-family: Tahoma;
+}
+
+ion-fab-button::part(native) {
+    height: 45px;
+    width: 45px;
+    background-color: #b7f399;
+    border-radius: 15px;
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+    color: black;
+    margin-left: 10px;
+    margin-top: -34px;
+  }
+  
+  ion-fab-button::part(native):hover::after {
+    background-color: #a3e681;
+  }
+  
+  ion-fab-button::part(native):active::after {
+    background-color: #87d361;
+  }

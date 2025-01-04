@@ -64,6 +64,17 @@ const routes: Routes = [
     loadChildren: () => import('./detail/detail.module').then( m => m.DetailPageModule)
   },
 
+  {
+    path: 'detailtanah',
+    loadChildren: () => import('./detailtanah/detailtanah.module').then( m => m.DetailtanahPageModule)
+  },
+
+  {
+    path: 'detailtanah/:id',
+    loadChildren: () => import('./detailtanah/detailtanah.module').then( m => m.DetailtanahPageModule)
+  },
+
+
 
 
 ];

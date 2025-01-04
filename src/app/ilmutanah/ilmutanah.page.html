@@ -11,12 +11,23 @@
       </ion-fab-button>
     </ion-fab>
 
-    <ion-searchbar class="search" search-icon="search-circle" placeholder="Mau cari apa nih?"></ion-searchbar>
+    <ion-searchbar class="search"
+    [(ngModel)]="searchIsi"  
+    placeholder="Mau cari apa nih?" 
+    showCancelButton="focus" 
+    animated>
+    </ion-searchbar>
 
   </ion-toolbar>
 </ion-header>
 
-
-<body>
-
-</body>
+<ion-content [fullscreen]="true">
+  <ion-list class="tn">
+    <ion-item *ngFor="let tan of tanah | filter: searchIsi" (click)="goToIsi(tan)">
+      <ion-label>
+        <h3>{{tan.title}}</h3>
+        <p>{{tan.description}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
