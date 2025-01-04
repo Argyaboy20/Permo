@@ -12,6 +12,7 @@ import { Tab2Page } from './tab2/tab2.page';
 import { HttpClientModule } from '@angular/common/http';
 import { PostProvider } from '../provider/post-provider';
 
+
 @NgModule({
   declarations: [AppComponent],
   imports: [

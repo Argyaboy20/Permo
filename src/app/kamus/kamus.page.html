@@ -11,11 +11,24 @@
       </ion-fab-button>
     </ion-fab>
 
-    <ion-searchbar class="search" search-icon="search-circle" placeholder="Cari di sini"></ion-searchbar>
+    <ion-searchbar class="search" 
+    [(ngModel)]="searchText" 
+    placeholder="Cari di sini" 
+    showCancelButton="focus" 
+    animated>
+    </ion-searchbar>
 
   </ion-toolbar>
 </ion-header>
 
-<body>
 
-</body>
+<ion-content [fullscreen]="true">
+  <ion-list class="ilm">
+    <ion-item *ngFor="let t of tumbuhan | filter: searchText" (click)="goToDetail(t)">
+      <ion-label>
+        <h3>{{t.title}}</h3>
+        <p>{{t.description}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

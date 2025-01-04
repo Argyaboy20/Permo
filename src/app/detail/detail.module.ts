@@ -1,19 +1,20 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { KamusPage } from './kamus.page';
+
 import { IonicModule } from '@ionic/angular';
 
-import { KamusPageRoutingModule } from './kamus-routing.module';
-import { FilterPipe } from '../filter.pipe';
+import { DetailPageRoutingModule } from './detail-routing.module';
+
+import { DetailPage } from './detail.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    KamusPageRoutingModule,
+    DetailPageRoutingModule
   ],
-  declarations: [KamusPage, FilterPipe,],
+  declarations: [DetailPage]
 })
-export class KamusPageModule {}
+export class DetailPageModule {}

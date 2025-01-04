@@ -49,6 +49,23 @@ const routes: Routes = [
     loadChildren: () => import('./ilmutanah/ilmutanah.module').then( m => m.IlmutanahPageModule)
   },
 
+  {
+    path: 'ilmutanah/:id',
+    loadChildren: () => import('./ilmutanah/ilmutanah.module').then( m => m.IlmutanahPageModule)
+  },
+
+  {
+    path: 'detail',
+    loadChildren: () => import('./detail/detail.module').then( m => m.DetailPageModule)
+  },
+
+  {
+    path: 'detail/:id',
+    loadChildren: () => import('./detail/detail.module').then( m => m.DetailPageModule)
+  },
+
+
+
 ];
 @NgModule({
   imports: [
