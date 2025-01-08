@@ -15,7 +15,7 @@ export class DaftarPage implements OnInit {
 
   username: string = '';
   email: string = '';
-  pass: string = '';
+  pss: string = '';
   konfirmasi: string = '';
   registerForm!: RegisterPageForm;
 
@@ -38,7 +38,7 @@ export class DaftarPage implements OnInit {
 
   async addRegister() {
     /*validasi keseluruhan data*/
-    if (this.username == '' && this.email == '' && this.pass == '' && this.konfirmasi == '') {
+    if (this.username == '' && this.email == '' && this.pss == '' && this.konfirmasi == '') {
       const toast = await this.toastController.create({
         message: 'Harap isi data yang dibutuhkan',
         duration: 2000,
@@ -62,7 +62,7 @@ export class DaftarPage implements OnInit {
       toast.present();
     }
     /*validasi input password*/
-    else if (this.pass == '') {
+    else if (this.pss == '') {
       const toast = await this.toastController.create({
         message: 'Password harus diisi',
         duration: 2000,
@@ -80,7 +80,7 @@ export class DaftarPage implements OnInit {
       let body = {
         username: this.username,
         email: this.email,
-        password: this.pass,
+        password: this.pss,
         konfirmasi: this.konfirmasi,
         aksi: 'add_register'
       };

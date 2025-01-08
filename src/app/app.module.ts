@@ -11,6 +11,7 @@ import { Tab2Page } from './tab2/tab2.page';
 
 import { HttpClientModule } from '@angular/common/http';
 import { PostProvider } from '../provider/post-provider';
+import { FilterPipe } from './filter.pipe';
 
 
 @NgModule({
@@ -25,6 +26,6 @@ import { PostProvider } from '../provider/post-provider';
     PostProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
-  bootstrap: [AppComponent, Tab2Page],
+  bootstrap: [AppComponent, Tab2Page, FilterPipe],
 })
 export class AppModule {}

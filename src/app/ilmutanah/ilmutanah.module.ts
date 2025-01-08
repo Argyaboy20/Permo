@@ -13,7 +13,7 @@ import { FilterPipe } from '../filter.pipe';
     CommonModule,
     FormsModule,
     IonicModule,
-    IlmutanahPageRoutingModule
+    IlmutanahPageRoutingModule,
   ],
   declarations: [IlmutanahPage, FilterPipe],
 })

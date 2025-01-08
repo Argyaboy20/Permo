@@ -14,6 +14,6 @@ import { FilterPipe } from '../filter.pipe';
     IonicModule,
     KamusPageRoutingModule,
   ],
-  declarations: [KamusPage, FilterPipe,],
+  declarations: [KamusPage, FilterPipe],
 })
 export class KamusPageModule {}
