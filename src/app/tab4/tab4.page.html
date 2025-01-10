@@ -44,7 +44,7 @@
   </div>
 
 
-  <ion-button color="danger" shape="round" class="footer" > 
+  <ion-button color="danger" shape="round" class="footer" onclick="return confirm('Yakin ingin menghapus akun?')" (click)="deleteData()" > 
     <a>
       HAPUS AKUN
     </a>

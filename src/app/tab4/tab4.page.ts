@@ -13,6 +13,11 @@ export class Tab4Page implements OnInit {
   daftars: any = [];
   limit: number = 1;
   start: number = 0;
+  id: string = '';
+  username: string = '';
+  email: string = '';
+  pss: string = '';
+  konfirmasi: string = '';
 
   constructor(
     private router: Router,
@@ -60,5 +65,24 @@ export class Tab4Page implements OnInit {
         resolve(true);
       });
     });
+  }
+
+  async deleteData() {
+    return new Promise(resolve => {
+      let body = {
+        id : this.id,
+        username: this.username,
+        email: this.email,
+        password: this.pss,
+        konfirmasi: this.konfirmasi,
+        aksi: 'deleteData'
+      };
+      this.postPvdr.postData(body, 'action.php').subscribe(async data => {
+        if (data.success) {
+        }
+        resolve(true);
+      });
+      this.router.navigateByUrl('/halamanutama');
+    }); 
   }
 }

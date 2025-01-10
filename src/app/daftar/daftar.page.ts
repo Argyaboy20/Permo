@@ -86,9 +86,9 @@ export class DaftarPage implements OnInit {
       };
       this.postPvdr.postData(body, 'action.php').subscribe(async data => {
         if (data.success) {
-          this.router.navigate(['/tab2']);
         }
       })
+      this.router.navigateByUrl('/tab2');
     }
   }
 }
