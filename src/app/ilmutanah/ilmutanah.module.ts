@@ -14,7 +14,8 @@ import { FilterPipe } from '../filter.pipe';
     FormsModule,
     IonicModule,
     IlmutanahPageRoutingModule,
+    FilterPipe
   ],
-  declarations: [IlmutanahPage, FilterPipe],
+  declarations: [IlmutanahPage],
 })
 export class IlmutanahPageModule {}

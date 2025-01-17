@@ -13,7 +13,8 @@ import { FilterPipe } from '../filter.pipe';
     FormsModule,
     IonicModule,
     KamusPageRoutingModule,
+    FilterPipe
   ],
-  declarations: [KamusPage, FilterPipe],
+  declarations: [KamusPage]
 })
 export class KamusPageModule {}

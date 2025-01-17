@@ -68,9 +68,10 @@ body {
     text-decoration: underline;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 678px) {
     .container {
-        margin: 10px;
-        padding: 10px;
+       grid-template-rows: 50px 50px 50px 1fr 
+       50px 50px 50px;
+       grid-template-columns: 1fr;
     }
 }
