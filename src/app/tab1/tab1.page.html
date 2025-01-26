@@ -1,54 +1,43 @@
 <body>
-
   <div class="container">
     <div class="header">
       <ion-img src="/assets/permo_logo.jpg" alt="Permo Logo"
         style="height: 150px; width: 150px; margin: auto;"></ion-img>
-      <h1>
-        PERTANIAN MOBILE
-      </h1>
+      <h1>PERTANIAN MOBILE</h1>
     </div>
 
-    <div class=" form-group">
+    <div class="form-group">
       <label for="username">
         <ion-icon aria-hidden="true" name="person-outline"></ion-icon>
         Username
       </label>
-      <ion-input type="username" placeholder="Masukkan username di sini" value="">
+      <ion-input 
+        type="text" 
+        placeholder="Masukkan username di sini" 
+        [(ngModel)]="username">
       </ion-input>
     </div> 
 
     <div class="form-group">
-      <label for="password">
-        Password
-      </label>
+      <label for="password">Password</label>
       <div class="input-group">
-        <ion-input type="password" placeholder="Ketik di sini" value="">
+        <ion-input 
+          type="password" 
+          placeholder="Ketik di sini" 
+          [(ngModel)]="konfirmasi">
           <ion-input-password-toggle slot="end"></ion-input-password-toggle>
         </ion-input>
       </div>
 
       <div class="note">Lupa password/username?</div>
-      <a class="hyper" href="lupaakun">
-        Klik di sini
-      </a>
+      <a class="hyper" href="lupaakun">Klik di sini</a>
     </div>
 
-    <ion-button type="submit" class="masuk" id="present-alert" href="/tabs/tab2">MASUK</ion-button>
-            <ion-alert 
-                trigger="present-alert" 
-                header="DATA KOSONG!" 
-                message="Harap isi username dan password yang dibutuhkan" 
-                [buttons]="alertButtons"></ion-alert>
-
+    <ion-button type="submit" class="masuk" (click)="login()">MASUK</ion-button>
+            
     <div class="footer">
-        <label for="akun?">
-          Belum punya akun?
-        </label>
-        <a href="daftar">
-          Daftar Sekarang
-        </a>
+      <label for="akun?">Belum punya akun?</label>
+      <a href="daftar">Daftar Sekarang</a>
     </div>
   </div>
-
 </body>

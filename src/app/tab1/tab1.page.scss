@@ -138,3 +138,33 @@ body {
 .footer a:hover {
     text-decoration: underline;
 }
+
+@media (min-width: 768px) {
+    .container {
+       grid-template-rows: 50px 50px 50px 1fr 
+       50px 50px 50px;
+       grid-template-columns: 1fr;
+    }
+
+    body {
+        grid-template-rows: 50px 50px 50px 1fr 
+       50px 50px 50px;
+       grid-template-columns: 1fr;
+    }
+
+}
+
+@media (min-width: 1000px) {
+    .container {
+       grid-template-rows: 80px 80px 80px 1fr 
+       80px 80px 80px;
+       grid-template-columns: 1fr;
+    }
+
+    body {
+        grid-template-rows: 80px 80px 80px 1fr 
+       80px 80px 80px;
+       grid-template-columns: 1fr;
+    }
+
+}

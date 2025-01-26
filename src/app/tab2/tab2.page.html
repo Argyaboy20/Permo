@@ -11,70 +11,72 @@
   </ion-button>
 
   <ion-button class="gan" fill="clear" href="/tabs/tab4">
-    Ganti Password 
+    Ganti Password
   </ion-button>
 
-  <ion-button class="ban" fill="clear" href="."> 
+  <ion-button class="ban" fill="clear" href=".">
     Bantuan
   </ion-button>
 
-  <ion-button class="log" fill="clear" href="/halamanutama"> 
+  <ion-button class="log" fill="clear" href="/halamanutama">
     Logout Akun
   </ion-button>
 </ion-menu>
 
 <div class="ion-page" id="main-content">
-  <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-img class="gambar" src="/assets/permo.png" alt="Permo Logo"
-      style="height: 75px; width: 75px; margin-left: 560px;"></ion-img>
+  <div class="wrapper">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+        <ion-img class="gambar" src="/assets/permo.png" alt="Permo Logo"
+          style="height: 75px; width: 75px; margin-left: 560px;"></ion-img>
 
-    <ion-title class="jdl">PERMO</ion-title>
-  </ion-toolbar>    
+        <ion-title class="jdl">PERMO</ion-title>
+      </ion-toolbar>
+    </ion-header>
+  </div>
 
   <body>
+    <div class="wrapper">
+      <ion-card class="card">
+        <ion-card-header>
+          <ion-card-title class="judul">KAMUS PERMO</ion-card-title>
+        </ion-card-header>
 
-    <ion-card class="card">
-      <ion-card-header>
-        <ion-card-title class="judul">KAMUS PERMO</ion-card-title>
-      </ion-card-header>
+        <ion-card-content class="content">
+          Pengetahuan tentang ilmu pertanian untuk berbagai jenis tumbuhan, seperti cara penanaman, suhu
+          yang cocok, tanah yang cocok, dan lainnya.
+        </ion-card-content>
 
-      <ion-card-content class="content">
-        Berisi tentang pengetahuan tentang ilmu pertanian untuk berbagai jenis tumbuhan, seperti cara penanaman, suhu
-        yang cocok, tanah yang cocok, dan lainnya.
-      </ion-card-content>
+        <ion-button class="jelajah" fill="clear" href="kamus">Jelajahi</ion-button>
+      </ion-card>
 
-      <ion-button class="jelajah" fill="clear" href="kamus">Jelajahi</ion-button>
-    </ion-card>
+      <ion-card class="crd">
+        <ion-card-header>
+          <ion-card-title class="ttl">PREDIKSI CUACA</ion-card-title>
+        </ion-card-header>
 
-    <ion-card class="crd">
-      <ion-card-header>
-        <ion-card-title class="ttl">PREDIKSI CUACA</ion-card-title>
-      </ion-card-header>
+        <ion-card-content class="cntnt">
+          Berisi perkiraan cuaca secara real time dan akurat, serta suhu yang cocok untuk menanam setiap jenis tumbuhan
+        </ion-card-content>
 
-      <ion-card-content class="cntnt">
-        Berisi perkiraan cuaca secara real time dan akurat, serta suhu yang cocok untuk menanam tumbuhan
-      </ion-card-content>
+        <ion-button class="jljh" fill="clear" href="/tabs/tab3">Jelajahi</ion-button>
+      </ion-card>
 
-      <ion-button class="jljh" fill="clear" href="/tabs/tab3">Jelajahi</ion-button>
-    </ion-card>
+      <ion-card class="kartu">
+        <ion-card-header>
+          <ion-card-title class="ttl">ILMU TANAH</ion-card-title>
+        </ion-card-header>
 
-    <ion-card class="kartu">
-      <ion-card-header>
-        <ion-card-title class="ttl">ILMU TANAH</ion-card-title>
-      </ion-card-header>
+        <ion-card-content class="cntnt">
+          Mengenal lebih jauh tentang jenis jenis tanah yang ada di Indonesia
+        </ion-card-content>
 
-      <ion-card-content class="cntnt">
-        Mengenal lebih jauh tentang jenis jenis tanah yang ada di Indonesia
-      </ion-card-content>
+        <ion-button class="jljh" fill="clear" href="ilmutanah">Jelajahi</ion-button>
+      </ion-card>
 
-      <ion-button class="jljh" fill="clear" href="ilmutanah">Jelajahi</ion-button>
-    </ion-card>
-
-
+    </div>
   </body>
-</ion-header>
 </div>

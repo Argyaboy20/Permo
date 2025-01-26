@@ -1,7 +1,7 @@
-.ss {
+ion-card {
     width: 230px;
     height: 70px;
-    margin-left: 135px;
+    margin-left: 120px;
     margin-top: 25px;
     border-radius: 50px;
     background-color: #324851;
@@ -36,7 +36,7 @@ h1 {
 
 h2 {
     text-align: center;
-    font-size: 21px;
+    font-size: 25px;
     margin-top: 25px;
     font-family: 'Trebuchet MS';
     font-weight: bold;
@@ -67,34 +67,49 @@ ion-button {
 
     --padding-top: 10px;
     --padding-bottom: 10px;
+}
 
+.msk {
+    font-family: 'Lucida Sans';
+    width: 85px;
+    font-size: 14px;
+    height: 35px;
+    margin-left: 1150px;
+    margin-top: -830px
+    
+}
+
+.dft {
     width: 300px;
     height: 65px;
     font-family: 'Lucida Sans';
     font-size: 20px;
     margin-top: 10px;
-    margin-left: 535px;
+    margin-left: 540px;
 }
 
-.msk {
-    width: 85px;
-    font-size: 14px;
-    height: 35px;
-    margin-left: 290px;
-    margin-top: -750px
-}
-
-@media (max-width: 678px) {
+@media screen and (min-width: 476px) {
     body {
-        grid-template-rows: 50px 50px 50px 1fr 50px 50px 50px;
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "header"
-            "banner"
-            "left-aside"
-            "main"
-            "right-aside"
-            "low-content"
-            "footer";
+        grid-template-rows: 50px 50px 50px 1fr 
+       50px 50px 50px;
+       grid-template-columns: 1fr;
     }
+
+    ion-card {
+        margin-left: 0px auto;
+    }
+
+}
+
+@media screen and (min-width: 1000px) {
+    body {
+        grid-template-rows: 50px 50px 50px 1fr 
+        50px 50px 50px;
+        grid-template-columns: 1fr;
+    }
+
+    ion-card {
+        margin-left: 0px auto;
+    }
+
 }

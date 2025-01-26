@@ -30,41 +30,168 @@ switch ($aksi) {
                 $result = json_encode(array('success' => false, 'msg' => 'error, please try again'));
 
             echo $result;
-        } 
-        catch (PDOException $e) 
-        {
+        } catch (PDOException $e) {
             echo $e->getMessage();
         }
         break;
 
     case "getdata":
-        $limit = filter_var($postjson['limit'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
-        $start = filter_var($postjson['start'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
+        $limit = filter_var($postjson['limit'], FILTER_SANITIZE_NUMBER_INT);
+        $start = filter_var($postjson['start'], FILTER_SANITIZE_NUMBER_INT);
+
         try {
-            $sql = "SELECT * FROM daftar ORDER BY id DESC LIMIT :start,:limit";
+            $sql = "SELECT * FROM daftar ORDER BY id DESC LIMIT :start, :limit";
             $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':start', $start, PDO::PARAM_STR);
-            $stmt->bindParam(':limit', $limit, PDO::PARAM_STR);
+            $stmt->bindValue(':start', (int) $start, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
             $stmt->execute();
+
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($rows as $row) {
-                $data[] = array(
-                    'id' => $row['id'],
-                    'username' => $row['username'],
-                    'email' => $row['email'],
-                    'pss' => $row['pss'],
-                    'konfirmasi' => $row['konfirmasi']
-                );
+
+            if ($rows) {
+                $result = json_encode([
+                    'success' => true,
+                    'result' => $rows
+                ]);
+            } else {
+                $result = json_encode([
+                    'success' => false,
+                    'message' => 'No data found'
+                ]);
             }
-            if($stmt) $result = json_encode(array('success'=>true, 'result'=>$data));
-            else $result =  json_encode(array('success'=>false));
 
             echo $result;
-        } 
-        catch (PDOException $e) 
-        {
-            echo $e->getMessage();
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        break;
+
+
+    case "deleteData":
+        $id = filter_var($postjson['id'], FILTER_SANITIZE_NUMBER_INT);
+
+        try {
+            $sql = "DELETE FROM daftar WHERE id = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $result = $stmt->execute();
+
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Data berhasil dihapus'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Gagal menghapus data'
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        break;
+
+    case "login":
+        $username = filter_var($postjson['username'], FILTER_SANITIZE_STRING);
+        $konfirmasi = filter_var($postjson['konfirmasi'], FILTER_SANITIZE_STRING);
+
+        try {
+            // Use parameterized query to prevent SQL injection
+            $sql = "SELECT id, username, konfirmasi FROM daftar WHERE username = :username";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Validate user and password
+            if ($user && $user['konfirmasi'] === $konfirmasi) {
+                echo json_encode([
+                    'success' => true,
+                    'id' => $user['id'],
+                    'username' => $user['username']
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Username atau password salah'
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Login error: ' . $e->getMessage()
+            ]);
+        }
+        break;
+
+    case "lupa_akun":
+        $email = filter_var($postjson['email'], FILTER_SANITIZE_EMAIL);
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Format email tidak valid'
+            ]);
+            exit;
         }
 
-    break;
+        try {
+            // Cari akun berdasarkan email
+            $sql = "SELECT username, konfirmasi FROM daftar WHERE email = :email";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                // Kirim email dengan informasi akun
+                $to = $email;
+                $subject = "Informasi Akun Pertanian Mobile";
+                $message = "Berikut adalah informasi akun Anda:\n\n";
+                $message .= "Username: " . $user['username'] . "\n";
+                $message .= "Password: " . $user['konfirmasi'] . "\n\n";
+                $message .= "Harap simpan informasi ini dengan aman.";
+                $message .= "Salam Hangat,";
+                $message .= "Tim IT Pertanian Mobile";
+
+                $headers = "From: noreply@pertanianmobile.com\r\n";
+                $headers .= "Reply-To: noreply@pertanianmobile.com\r\n";
+                $headers .= "X-Mailer: PHP/" . phpversion();
+
+                // Kirim email
+                $mail_sent = mail($to, $subject, $message, $headers);
+
+                if ($mail_sent) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Informasi akun telah dikirim ke email'
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Gagal mengirim email'
+                    ]);
+                }
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email tidak terdaftar'
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Kesalahan sistem: ' . $e->getMessage()
+            ]);
+        }
+        break;
 }

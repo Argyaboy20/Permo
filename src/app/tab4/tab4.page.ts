@@ -10,14 +10,11 @@ import { ToastController } from '@ionic/angular';
 })
 export class Tab4Page implements OnInit {
 
-  daftars: any = [];
+  daftars: any[] = [];
   limit: number = 1;
   start: number = 0;
   id: string = '';
-  username: string = '';
-  email: string = '';
-  pss: string = '';
-  konfirmasi: string = '';
+  showPassword: boolean = false;
 
   constructor(
     private router: Router,
@@ -26,6 +23,11 @@ export class Tab4Page implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.loadDaftar();
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
   ionViewWillEnter() {
@@ -44,11 +46,11 @@ export class Tab4Page implements OnInit {
   loadData(event: any) {
     this.start += this.limit;
     setTimeout(() => {
-    this.loadDaftar().then(() => {
-    event.target.complete();
-    });
+      this.loadDaftar().then(() => {
+        event.target.complete();
+      });
     }, 500);
-    }
+  }
 
   loadDaftar() {
     return new Promise(resolve => {
@@ -58,31 +60,55 @@ export class Tab4Page implements OnInit {
         start: this.start,
       };
 
-      this.postPvdr.postData(body, 'action.php').subscribe(data => {
-        for (let daftar of data.result) {
-          this.daftars.push(daftar);
+      this.postPvdr.postData(body, 'action.php').subscribe({
+        next: (data: any) => {
+          if (data.success && data.result) {
+            this.daftars = [...this.daftars, ...data.result];
+            resolve(true);
+          }
+        },
+        error: (error) => {
+          console.error('Error fetching data', error);
+          resolve(false);
         }
-        resolve(true);
       });
     });
   }
 
   async deleteData() {
-    return new Promise(resolve => {
-      let body = {
-        id : this.id,
-        username: this.username,
-        email: this.email,
-        password: this.pss,
-        konfirmasi: this.konfirmasi,
-        aksi: 'deleteData'
-      };
-      this.postPvdr.postData(body, 'action.php').subscribe(async data => {
-        if (data.success) {
-        }
-        resolve(true);
+    if (this.daftars.length === 0) {
+      const toast = await this.toastController.create({
+        message: 'Tidak ada akun untuk dihapus',
+        duration: 2000
       });
-      this.router.navigateByUrl('/halamanutama');
-    }); 
+      toast.present();
+      return;
+    }
+
+    const body = {
+      id: this.daftars[0].id,
+      aksi: 'deleteData'
+    };
+
+    this.postPvdr.postData(body, 'action.php').subscribe({
+      next: async (data: any) => {
+        const toast = await this.toastController.create({
+          message: data.success ? 'Akun berhasil dihapus' : 'Gagal menghapus akun',
+          duration: 2000
+        });
+        toast.present();
+
+        if (data.success) {
+          this.router.navigateByUrl('/halamanutama');
+        }
+      },
+      error: async () => {
+        const toast = await this.toastController.create({
+          message: 'Kesalahan jaringan',
+          duration: 2000
+        });
+        toast.present();
+      }
+    });
   }
 }

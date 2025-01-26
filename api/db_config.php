@@ -1,6 +1,6 @@
 <?php
     header('Access-Control-Allow-Origin: *');
-    $hostname   = 'localhost';
+    $hostname   = '127.0.0.1';
     $username   = 'root';
     $password   = ''; //isikan password database (jika ada)
     $database   = 'permo';

@@ -55,9 +55,9 @@ body {
 
 .card {
     width: 400px;
-    margin-top: 40px;
+    margin-top: 100px;
     margin-left: 250px;
-    background-color: #324851 ;
+    background-color: #324851;
     box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
     border: 1px solid #FFFFFF;
 }
@@ -75,13 +75,13 @@ body {
 .jelajah {
     background-color: #007bff;
     color: #FFFFFF;
-    font-family:'Franklin Gothic Medium';
+    font-family: 'Franklin Gothic Medium';
 }
 
 .crd {
     width: 400px;
     margin-left: 750px;
-    margin-top: -208px;
+    margin-top: -190px;
     background-color: #324851;
     box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
     border: 1px solid #FFFFFF;
@@ -100,14 +100,26 @@ body {
 .jljh {
     background-color: #007bff;
     color: #FFFFFF;
-    font-family:'Franklin Gothic Medium';
+    font-family: 'Franklin Gothic Medium';
 }
 
 .kartu {
     width: 400px;
     margin-left: 480px;
-    margin-top: 70px;
+    margin-top: 40px;
     background-color: #324851;
     box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
     border: 1px solid #FFFFFF;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+@media screen and (min-width: 476px) {
+
+    
 }
