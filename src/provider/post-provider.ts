@@ -13,12 +13,15 @@ export class PostProvider {
     let type = 'application/json; charset=utf-8';
     let headers = new HttpHeaders({ 'Content-Type': type });
 
+    console.log('PostProvider URL:', this.server + file);
+    console.log('PostProvider body:', body);
+
     return this.http.post(this.server + file, JSON.stringify(body), {
       headers: headers,
     }).pipe(
       map((res: any) => {
         return res;
-      })
-    );
-  }
+      })
+    );
+  }
 }

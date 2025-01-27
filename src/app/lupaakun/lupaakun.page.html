@@ -7,24 +7,13 @@
 
         <form>
             <div class="form-group">
-                <ion-textarea 
-                    [(ngModel)]="email" 
-                    name="email"
-                    fill="solid" 
-                    label="Email" 
-                    labelPlacement="floating" 
-                    fill="outline"
-                    helperText="Masukkan email yang valid" 
-                    errorText="Email tidak valid" 
-                    placeholder="Ketik email di sini" 
-                    type="email">
+                <ion-textarea [(ngModel)]="email" name="email" fill="solid" label="Email" labelPlacement="floating"
+                    fill="outline" helperText="Masukkan email yang valid" errorText="Email tidak valid"
+                    placeholder="Ketik email di sini" type="email">
                 </ion-textarea>
             </div>
 
-            <ion-button 
-                type="submit" 
-                class="btn" 
-                (click)="kirimInformasi()">
+            <ion-button type="submit" class="btn" (click)="kirimInformasi()">
                 KIRIM INFORMASI AKUN
             </ion-button>
         </form>

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
+import { IonicStorageModule } from '@ionic/storage-angular';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 
@@ -26,7 +27,8 @@ import { IlmutanahPage } from './ilmutanah/ilmutanah.page';
     AppRoutingModule,
     HttpClientModule,
     KamusPageRoutingModule,
-    IlmutanahPageRoutingModule
+    IlmutanahPageRoutingModule,
+    IonicStorageModule.forRoot()
 
   ],
   providers: [

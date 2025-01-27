@@ -19,41 +19,63 @@ export class Tab1Page implements OnInit {
     public loadingController: LoadingController
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    // Clear any existing session data
+    localStorage.clear();
+  }
 
   async login() {
-    if (!this.username || !this.konfirmasi) {
-      this.presentToast('Harap isi username dan password');
+    console.log('Starting login process...', {
+      username: this.username,
+      konfirmasi: this.konfirmasi
+    });
+
+    // Validasi input
+    if (!this.username?.trim() || !this.konfirmasi?.trim()) {
+      this.presentToast('Mohon isi username dan password');
       return;
     }
 
-    // Show loading
+    // Tampilkan loading
     const loading = await this.loadingController.create({
       message: 'Mohon tunggu...',
-      spinner: 'circles',
-      duration: 1500
+      spinner: 'circles'
     });
     await loading.present();
 
+    // Siapkan data untuk dikirim ke server
     const body = {
       username: this.username,
       konfirmasi: this.konfirmasi,
       aksi: 'login'
     };
 
+    // Kirim request ke server
     this.postPvdr.postData(body, 'action.php').subscribe({
-      next: async (response: any) => {
+      next: async (data: any) => {
+        console.log('Received response:', data);
+        await loading.dismiss();
 
-        if (response.success) {
-          localStorage.setItem('userId', response.id);
-          localStorage.setItem('userUsername', response.username);
+        if (data.success) {
+          // Simpan data user ke localStorage
+          localStorage.setItem('userId', data.id);
+          localStorage.setItem('userUsername', data.username);
+          localStorage.setItem('userKonfirmasi', data.konfirmasi);
+
+          // Tampilkan pesan sukses
+          this.presentToast('Login berhasil');
+
+          // Pindah ke halaman dashboard
+          this.router.navigate(['/tabs/tab2']);
+        } else {
+          console.log('Login failed:', data.message); // Debug log
+          this.presentToast('Username atau password salah');
         }
-        await loading.dismiss();
-        this.router.navigateByUrl('/tabs/tab2');
       },
-      error: async () => {
+      error: async (error) => {
+        console.error('Login error:', error);
         await loading.dismiss();
-        this.presentToast('Login gagal! Periksa kembali username dan password anda');
+        this.presentToast('Gagal login! Periksa koneksi anda');
       }
     });
   }
@@ -61,7 +83,8 @@ export class Tab1Page implements OnInit {
   async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 2000,
+      duration: 1500,
+      position: 'bottom'
     });
     toast.present();
   }

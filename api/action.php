@@ -99,24 +99,35 @@ switch ($aksi) {
         break;
 
     case "login":
-        $username = filter_var($postjson['username'], FILTER_SANITIZE_STRING);
-        $konfirmasi = filter_var($postjson['konfirmasi'], FILTER_SANITIZE_STRING);
-
         try {
-            // Use parameterized query to prevent SQL injection
-            $sql = "SELECT id, username, konfirmasi FROM daftar WHERE username = :username";
+            if (!isset($postjson['username']) || !isset($postjson['konfirmasi'])) {
+                throw new Exception('Username and password are required');
+            }
+
+            $username = trim($postjson['username']);
+            $konfirmasi = trim($postjson['konfirmasi']);
+
+
+            // Log input data
+            error_log("Login attempt - username: " . $username);
+
+            $sql = "SELECT * FROM daftar WHERE username = :username AND konfirmasi = :konfirmasi";
             $stmt = $pdo->prepare($sql);
             $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':konfirmasi', $konfirmasi, PDO::PARAM_STR);
             $stmt->execute();
 
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Validate user and password
-            if ($user && $user['konfirmasi'] === $konfirmasi) {
+            // Log query result
+            error_log("Query result: " . json_encode($user));
+
+            if ($user) {
                 echo json_encode([
                     'success' => true,
                     'id' => $user['id'],
-                    'username' => $user['username']
+                    'username' => $user['username'],
+                    'konfirmasi' => $user['konfirmasi']
                 ]);
             } else {
                 echo json_encode([
@@ -125,9 +136,10 @@ switch ($aksi) {
                 ]);
             }
         } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
-                'message' => 'Login error: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage()
             ]);
         }
         break;
@@ -191,6 +203,60 @@ switch ($aksi) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Kesalahan sistem: ' . $e->getMessage()
+            ]);
+        }
+        break;
+
+    case "change_password":
+        if (!isset($postjson['username']) || !isset($postjson['old_password']) || !isset($postjson['new_password'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Data tidak lengkap'
+            ]);
+            exit();
+        }
+
+        $username = filter_var($postjson['username'], FILTER_SANITIZE_STRING);
+        $old_password = filter_var($postjson['old_password'], FILTER_SANITIZE_STRING);
+        $new_password = filter_var($postjson['new_password'], FILTER_SANITIZE_STRING);
+
+        try {
+            // Check if password is correct
+            $check_sql = "SELECT id FROM daftar WHERE username = :username AND konfirmasi = :old_password";
+            $check_stmt = $pdo->prepare($check_sql);
+            $check_stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $check_stmt->bindParam(':old_password', $old_password, PDO::PARAM_STR);
+            $check_stmt->execute();
+
+            if ($check_stmt->rowCount() === 0) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Password lama tidak sesuai'
+                ]);
+                exit();
+            }
+
+            // Update password
+            $update_sql = "UPDATE daftar SET konfirmasi = :new_password WHERE username = :username";
+            $update_stmt = $pdo->prepare($update_sql);
+            $update_stmt->bindParam(':new_password', $new_password, PDO::PARAM_STR);
+            $update_stmt->bindParam(':username', $username, PDO::PARAM_STR);
+
+            if ($update_stmt->execute()) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Password berhasil diubah'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Gagal mengubah password'
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem'
             ]);
         }
         break;

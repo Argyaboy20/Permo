@@ -73,9 +73,10 @@ const routes: Routes = [
     path: 'detailtanah/:id',
     loadChildren: () => import('./detailtanah/detailtanah.module').then( m => m.DetailtanahPageModule)
   },
-
-
-
+  {
+    path: 'gantipassword',
+    loadChildren: () => import('./gantipassword/gantipassword.module').then( m => m.GantipasswordPageModule)
+  },
 
 ];
 @NgModule({
