@@ -208,41 +208,37 @@ switch ($aksi) {
         break;
 
     case "change_password":
-        if (!isset($postjson['username']) || !isset($postjson['old_password']) || !isset($postjson['new_password'])) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Data tidak lengkap'
-            ]);
-            exit();
-        }
-
-        $username = filter_var($postjson['username'], FILTER_SANITIZE_STRING);
-        $old_password = filter_var($postjson['old_password'], FILTER_SANITIZE_STRING);
-        $new_password = filter_var($postjson['new_password'], FILTER_SANITIZE_STRING);
-
         try {
-            // Check if password is correct
-            $check_sql = "SELECT id FROM daftar WHERE username = :username AND konfirmasi = :old_password";
+            $old_password = trim($postjson['old_password']);
+            $new_password = trim($postjson['new_password']);
+    
+            if (empty($old_password) || empty($new_password)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Data tidak lengkap'
+                ]);
+                exit;
+            }
+    
+            // Verifikasi password lama
+            $check_sql = "SELECT id FROM daftar WHERE konfirmasi = ?";
             $check_stmt = $pdo->prepare($check_sql);
-            $check_stmt->bindParam(':username', $username, PDO::PARAM_STR);
-            $check_stmt->bindParam(':old_password', $old_password, PDO::PARAM_STR);
-            $check_stmt->execute();
-
+            $check_stmt->execute([$old_password]);
+    
             if ($check_stmt->rowCount() === 0) {
                 echo json_encode([
                     'success' => false,
                     'message' => 'Password lama tidak sesuai'
                 ]);
-                exit();
+                exit;
             }
-
+    
             // Update password
-            $update_sql = "UPDATE daftar SET konfirmasi = :new_password WHERE username = :username";
+            $update_sql = "UPDATE daftar SET konfirmasi = ? WHERE konfirmasi = ?";
             $update_stmt = $pdo->prepare($update_sql);
-            $update_stmt->bindParam(':new_password', $new_password, PDO::PARAM_STR);
-            $update_stmt->bindParam(':username', $username, PDO::PARAM_STR);
-
-            if ($update_stmt->execute()) {
+            $success = $update_stmt->execute([$new_password, $old_password]);
+    
+            if ($success) {
                 echo json_encode([
                     'success' => true,
                     'message' => 'Password berhasil diubah'
@@ -253,6 +249,7 @@ switch ($aksi) {
                     'message' => 'Gagal mengubah password'
                 ]);
             }
+    
         } catch (PDOException $e) {
             echo json_encode([
                 'success' => false,
