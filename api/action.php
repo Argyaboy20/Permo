@@ -171,9 +171,9 @@ switch ($aksi) {
                 $message = "Berikut adalah informasi akun Anda:\n\n";
                 $message .= "Username: " . $user['username'] . "\n";
                 $message .= "Password: " . $user['konfirmasi'] . "\n\n";
-                $message .= "Harap simpan informasi ini dengan aman.";
-                $message .= "Salam Hangat,";
-                $message .= "Tim IT Pertanian Mobile";
+                $message .= "Harap simpan informasi ini dengan aman." . "\n\n";
+                $message .= "Salam Hangat," . "\r\n";
+                $message .= "Tim IT Pertanian Mobile" . "\n\n";
 
                 $headers = "From: noreply@pertanianmobile.com\r\n";
                 $headers .= "Reply-To: noreply@pertanianmobile.com\r\n";
