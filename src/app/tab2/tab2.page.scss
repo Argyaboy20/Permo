@@ -1,3 +1,9 @@
+ion-img {
+    height: 75px;
+    width: 75px;
+    margin-left: 560px;
+}
+
 .set {
     height: 30px;
     width: 30px;
@@ -119,7 +125,60 @@ body {
     align-items: center;
 }
 
-@media screen and (min-width: 476px) {
-
+/* Tiny Mobile Devices (320px - 375px)*/
+@media screen and (min-width: 320px) and (max-width: 375px) {
+    body {
+        min-height: 480px;
+        max-height: 885px;
+        padding: 10px;
+    }
     
+    .jdl {
+        margin-left: 200px;
+        font-size: 16px;
+        margin-top: -75px;
+    }
+
+    .gambar {
+        margin-left: 165px;
+        padding-top: 10px;
+        height: 75px;
+        width: 75px;
+    }
+
+    .wrapper {
+        flex-direction: column;
+    }
+
+    .card, .crd, .kartu {
+        width: 280px;
+        margin: 70px auto;
+    }
+
+    .crd {
+        margin-top: -10px;
+        margin-left: auto;
+    }
+
+    .kartu {
+        margin-top: -10px;
+    }
+
+    .judul, .ttl {
+        font-size: 18px;
+    }
+
+    .content, .cntnt {
+        font-size: 12px;
+    }
+
+    .jelajah, .jljh {
+        font-size: 13px;
+    }
+
+    .ion-padding, .gan, .ban {
+        width: 100%;
+        margin-left: 0px;
+        font-size: 13px;
+    }
 }
