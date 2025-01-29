@@ -40,6 +40,12 @@ ion-card {
     font-family: 'Trebuchet MS';
     font-size: 15px;
     color: #FFFFFF;
+    z-index: 1; /* Add z-index to ensure text stays on top */
+    position: relative; /* Add position relative for z-index to work */
+    display: block;
+    max-width: 260px;
+    line-height: 1.2;
+    padding-right: 10px;
 }
 
 .gbr {
@@ -117,18 +123,34 @@ ion-button {
     margin-right: 20px;
 }
 
-/* Small Mobile Devices (320px - 375px) */
+/* Tiny Mobile Devices (320px - 375px) */
 @media screen and (min-width: 320px) and (max-width: 375px) {
+    body {
+        min-height: 480px;
+        max-height: 885px;
+    }
+
     .header-area {
         flex-direction: column;
         padding: 10px;
     }
     
     ion-card {
-        width: 180px;
+        width: 200px;
         height: 70px;
-        margin-left: -150px;
+        margin-left: -120px;
         margin-top: -20px;
+    }
+    
+    .atas {
+        margin-top: -40px;
+        margin-left: 45px;
+        font-size: 13px;
+        width: 220px;
+        white-space: normal;
+        word-wrap: break-word;
+        line-height: 1.2;
+        padding-right: 5px;
     }
     
     .msk {
@@ -156,19 +178,35 @@ ion-button {
     }
 }
 
-
 /* Small Mobile Devices (376px - 475px) */
 @media screen and (min-width: 376px) and (max-width: 475px) {
+    body {
+        min-height: 668px;
+        max-height: 930px;
+        padding: 15px;
+    }
+
     .header-area {
         flex-direction: column;
         padding: 10px;
     }
     
     ion-card {
-        width: 180px;
+        width: 220px;
         height: 70px;
         margin-left: -150px;
-        margin-top: -20px;
+        margin-top: -10px;
+    }
+    
+    .atas {
+        margin-top: -40px;
+        margin-left: 45px;
+        font-size: 13px;
+        width: 220px;
+        white-space: normal;
+        word-wrap: break-word;
+        line-height: 1.2;
+        padding-right: 5px;
     }
     
     .msk {
@@ -203,19 +241,60 @@ ion-button {
     }
     
     ion-card {
-        width: 200px;
+        width: 310px;
+        height: 90px;
         margin-top: -80px;
     }
     
+    .atas {
+        margin-top: -55px;
+        margin-left: -5px;
+        font-size: 18px;
+        width: 290px;
+        white-space: normal;
+        word-wrap: break-word;
+        line-height: 1.2;
+        padding-right: 5px;
+    }
+
+    .gbr {
+        margin-top: -12px;
+        height: 100px;
+        width: 100px;
+    }
+    
     .msk {
+        width: 100px;
+        height: 50px;
         position: absolute;
-        top: 30px;
+        font-size: clamp(16px, 4vw, 20px);
+        top: 40px;
         right: 30px;
     }
     
     .dft {
-        width: 280px;
+        width: 300px;
+        height: 70px;
+        margin-top: -230px;
+        font-family: 'Lucida Sans';
+        font-size: clamp(16px, 6vw, 20px);
     }
+
+    h1 {
+        display: flexbox;
+        margin-top: 80px;
+    }
+
+    h2 {
+        margin-top: -135px;
+        font-size: 27px;
+    }
+
+    h3 {
+        margin-top: -235px;
+        font-size: 24px;
+    }
+
 }
 
 /* Large Tablets (769px - 999px) */
@@ -228,6 +307,14 @@ ion-button {
         position: absolute;
         top: 35px;
         right: 35px;
+    }
+
+    .dft {
+        width: 280px;
+        height: 65px;
+        margin-top: 30px;
+        font-family: 'Lucida Sans';
+        font-size: clamp(16px, 2vw, 20px);
     }
 }
 
@@ -258,16 +345,5 @@ ion-button {
         position: absolute;
         top: 45px;
         right: 60px;
-    }
-}
-
-/* Landscape Mode */
-@media screen and (max-height: 600px) and (orientation: landscape) {
-    h1 {
-        margin-top: 40px;
-    }
-    
-    .dft {
-        height: 50px;
     }
 }
