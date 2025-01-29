@@ -139,32 +139,133 @@ body {
     text-decoration: underline;
 }
 
-@media (min-width: 768px) {
-    .container {
-       grid-template-rows: 50px 50px 50px 1fr 
-       50px 50px 50px;
-       grid-template-columns: 1fr;
-    }
-
+/* Tiny Mobile Devices (320px - 375px) */
+@media screen and (min-width: 320px) and (max-width: 375px) {
     body {
-        grid-template-rows: 50px 50px 50px 1fr 
-       50px 50px 50px;
-       grid-template-columns: 1fr;
+        min-height: 480px;
+        max-height: 885px;
+        padding: 10px;
     }
 
+    .container {
+        margin: 20px auto;
+        max-width: 300px;
+        padding: 15px;
+    }
+
+    .header ion-img {
+        height: 100px;
+        width: 100px;
+    }
+
+    .header h1 {
+        font-size: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-group input {
+        padding: 8px;
+    }
+
+    .masuk {
+        margin-top: -5px;
+    }
 }
 
-@media (min-width: 1000px) {
-    .container {
-       grid-template-rows: 80px 80px 80px 1fr 
-       80px 80px 80px;
-       grid-template-columns: 1fr;
-    }
-
+/* Small Mobile Devices (376px - 475px) */
+@media screen and (min-width: 376px) and (max-width: 475px) {
     body {
-        grid-template-rows: 80px 80px 80px 1fr 
-       80px 80px 80px;
-       grid-template-columns: 1fr;
+        min-height: 668px;
+        max-height: 932px;
+        padding: 15px;
     }
 
+    .container {
+        margin: 30px auto;
+        max-width: 350px;
+    }
+
+    .header ion-img {
+        height: 120px;
+        width: 120px;
+    }
+}
+
+/* Tablets (476px - 768px) */
+@media screen and (min-width: 476px) and (max-width: 768px) {
+    body {
+        min-height: 880px;
+        max-height: 1050px;
+        padding: 15px;
+    }
+
+    .container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 25px;
+    }
+
+    .header ion-img {
+        height: 130px;
+        width: 130px;
+    }
+
+    .header h1 {
+        font-size: 20px;
+    }
+
+    .form-group input {
+        padding: 12px;
+    }
+
+    .masuk {
+        padding: 12px;
+    }
+}
+
+/* Large Tablets (769px - 999px) */
+@media screen and (min-width: 769px) and (max-width: 999px) {
+    body {
+        min-height: 1190px;
+        max-height: 1400px;
+        padding: 15px;
+    }
+
+    .container {
+        max-width: 550px;
+        margin: 50px auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+}
+
+/* Desktop (1000px and above) */
+@media screen and (min-width: 1000px) {
+    .container {
+        max-width: 400px;
+        margin: 66px auto;
+        padding: 20px;
+    }
+
+    .header ion-img {
+        height: 150px;
+        width: 150px;
+    }
+
+    .form-group label {
+        font-size: 16px;
+    }
+
+    .form-group input {
+        padding: 10px;
+    }
+
+    .masuk {
+        padding: 10px;
+    }
 }
