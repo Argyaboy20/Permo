@@ -6,9 +6,16 @@ header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Ac
 header('Content-Type: application/json; charset=UTF-8');
 
 include "db_config.php";
+
+// Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit(0);
+}
+
 $postjson = json_decode(file_get_contents('php://input'), true);
 $aksi = strip_tags($postjson['aksi']);
 $data = array();
+
 switch ($aksi) {
     case "add_register":
         $username = filter_var($postjson['username'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
@@ -211,7 +218,7 @@ switch ($aksi) {
         try {
             $old_password = trim($postjson['old_password']);
             $new_password = trim($postjson['new_password']);
-    
+
             if (empty($old_password) || empty($new_password)) {
                 echo json_encode([
                     'success' => false,
@@ -219,12 +226,12 @@ switch ($aksi) {
                 ]);
                 exit;
             }
-    
+
             // Verifikasi password lama
             $check_sql = "SELECT id FROM daftar WHERE konfirmasi = ?";
             $check_stmt = $pdo->prepare($check_sql);
             $check_stmt->execute([$old_password]);
-    
+
             if ($check_stmt->rowCount() === 0) {
                 echo json_encode([
                     'success' => false,
@@ -232,12 +239,12 @@ switch ($aksi) {
                 ]);
                 exit;
             }
-    
+
             // Update password
             $update_sql = "UPDATE daftar SET konfirmasi = ? WHERE konfirmasi = ?";
             $update_stmt = $pdo->prepare($update_sql);
             $success = $update_stmt->execute([$new_password, $old_password]);
-    
+
             if ($success) {
                 echo json_encode([
                     'success' => true,
@@ -249,7 +256,7 @@ switch ($aksi) {
                     'message' => 'Gagal mengubah password'
                 ]);
             }
-    
+
         } catch (PDOException $e) {
             echo json_encode([
                 'success' => false,
@@ -257,4 +264,80 @@ switch ($aksi) {
             ]);
         }
         break;
+
+    case "validate_user":
+        $username = trim($postjson['username'] ?? '');
+        $email = trim($postjson['email'] ?? '');
+
+        if (empty($username) || empty($email)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Username dan email harus diisi'
+            ]);
+            exit;
+        }
+
+        try {
+            $sql = "SELECT id FROM daftar WHERE username = :username AND email = :email";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'User ditemukan'
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Username atau email tidak terdaftar'
+                ]);
+            }
+        } catch (PDOException $e) {
+            error_log("Validate user error: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat validasi'
+            ]);
+        }
+        break;
+
+        case "add_bantuan":
+            $username = filter_var(trim($postjson['username'] ?? ''), FILTER_SANITIZE_STRING);
+            $email = filter_var(trim($postjson['email'] ?? ''), FILTER_SANITIZE_EMAIL);
+            $kendala = filter_var(trim($postjson['kendala'] ?? ''), FILTER_SANITIZE_STRING);
+    
+            if (empty($username) || empty($email) || empty($kendala)) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Semua field harus diisi'
+                ]);
+                exit;
+            }
+    
+            try {
+                $sql = "INSERT INTO bantuan (username, email, kendala, tanggal) VALUES (:username, :email, :kendala, NOW())";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+                $stmt->bindParam(':kendala', $kendala, PDO::PARAM_STR);
+    
+                if ($stmt->execute()) {
+                    echo json_encode([
+                        'success' => true,
+                        'message' => 'Kendala berhasil disimpan'
+                    ]);
+                } else {
+                    throw new PDOException("Failed to insert data");
+                }
+            } catch (PDOException $e) {
+                error_log("Add bantuan error: " . $e->getMessage());
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Terjadi kesalahan saat menyimpan data'
+                ]);
+            }
+            break;
 }

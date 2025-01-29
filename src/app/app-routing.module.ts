@@ -76,7 +76,11 @@ const routes: Routes = [
   {
     path: 'gantipassword',
     loadChildren: () => import('./gantipassword/gantipassword.module').then( m => m.GantipasswordPageModule)
+  },  {
+    path: 'bantuan',
+    loadChildren: () => import('./bantuan/bantuan.module').then( m => m.BantuanPageModule)
   },
+
 
 ];
 @NgModule({

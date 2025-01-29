@@ -1,0 +1,133 @@
+:host {
+    ion-content {
+        --font-family: 'Arial', sans-serif;
+        --background-color: #324851;
+        --margin: 0;
+        --padding: 0;
+        --background: url(/assets/background.png);
+        --background-size: cover;
+    }
+
+    .container {
+        max-width: 460px;
+        margin: 20px auto;
+        background-color: #2a393e;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(248, 244, 244, 0.1);
+        height: auto;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 15px;
+
+        h1 {
+            font-size: 24px;
+            color: #89da59;
+            margin: 0 0 10px 0;
+        }
+
+        p {
+            font-size: 14px;
+            color: #FFFFFF;
+            margin: 0;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        
+        ion-item {
+            --background: transparent;
+            --border-color: #89da59;
+            --border-radius: 4px;
+            --padding-start: 8px;
+            --padding-end: 8px;
+            --highlight-color: #89da59;
+            
+            &.item-has-focus {
+                --border-color: #89da59;
+            }
+        }
+
+        &.kendala-group {
+            .kendala-item {
+                --min-height: auto;
+                
+                ion-textarea {
+                    width: 100%;
+                    max-height: 200px;
+                    overflow-y: auto;
+                }
+            }
+        }
+    }
+
+    ion-label {
+        color: #FFFFFF !important;
+    }
+
+    ion-input, ion-textarea {
+        --color: #FFFFFF;
+        --placeholder-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .ken {
+        min-height: 100px;
+        max-height: 200px !important;
+        overflow-y: auto !important;
+        
+        &::part(native) {
+            min-height: 100px;
+            max-height: 200px;
+        }
+
+        &::part(textarea) {
+            min-height: 100px;
+            max-height: 200px;
+            padding: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            resize: none;
+        }
+    }
+
+    .error-message {
+        color: #ff4646;
+        font-size: 12px;
+        margin-top: 4px;
+        padding-left: 16px;
+    }
+
+    .btn {
+        --background: #89da59;
+        margin-top: 10px;
+        
+        &:disabled {
+            --background: #4a5c50;
+            opacity: 0.7;
+        }
+    }
+
+    // Custom scrollbar styling
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #89da59;
+        border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #6fb648;
+    }
+}
