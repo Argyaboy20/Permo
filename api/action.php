@@ -304,40 +304,50 @@ switch ($aksi) {
         }
         break;
 
-        case "add_bantuan":
-            $username = filter_var(trim($postjson['username'] ?? ''), FILTER_SANITIZE_STRING);
-            $email = filter_var(trim($postjson['email'] ?? ''), FILTER_SANITIZE_EMAIL);
-            $kendala = filter_var(trim($postjson['kendala'] ?? ''), FILTER_SANITIZE_STRING);
-    
-            if (empty($username) || empty($email) || empty($kendala)) {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'Semua field harus diisi'
-                ]);
-                exit;
+    case "add_bantuan":
+        try {
+            // Validasi input
+            if (empty($postjson['username']) || empty($postjson['email']) || empty($postjson['kendala'])) {
+                throw new Exception('Semua field harus diisi');
             }
-    
-            try {
-                $sql = "INSERT INTO bantuan (username, email, kendala, tanggal) VALUES (:username, :email, :kendala, NOW())";
-                $stmt = $pdo->prepare($sql);
-                $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-                $stmt->bindParam(':kendala', $kendala, PDO::PARAM_STR);
-    
-                if ($stmt->execute()) {
-                    echo json_encode([
-                        'success' => true,
-                        'message' => 'Kendala berhasil disimpan'
-                    ]);
-                } else {
-                    throw new PDOException("Failed to insert data");
-                }
-            } catch (PDOException $e) {
-                error_log("Add bantuan error: " . $e->getMessage());
+
+            $username = trim($postjson['username']);
+            $email = trim($postjson['email']);
+            $kendala = trim($postjson['kendala']);
+
+            // Debug log
+            error_log("Received data - username: $username, email: $email, kendala: $kendala");
+
+            // Insert data
+            $sql = "INSERT INTO bantuan (username, email, kendala) VALUES (:username, :email, :kendala)";
+            $stmt = $pdo->prepare($sql);
+
+            $stmt->bindParam(':username', $username);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':kendala', $kendala);
+
+            if ($stmt->execute()) {
                 echo json_encode([
-                    'success' => false,
-                    'message' => 'Terjadi kesalahan saat menyimpan data'
+                    'success' => true,
+                    'message' => 'Kendala berhasil disimpan'
                 ]);
+            } else {
+                throw new Exception('Gagal menyimpan data');
             }
-            break;
+
+        } catch (Exception $e) {
+            error_log("Error in add_bantuan: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        break;
+
+    default:
+        echo json_encode([
+            'success' => false,
+            'message' => 'Invalid action'
+        ]);
+        break;
 }
