@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 })
 export class BantuanPage implements OnInit {
   bantuanForm: FormGroup;
-  private apiUrl = 'http://127.0.0.1/api/action.php';
+  // Ganti dengan URL server Anda, misalnya:
+  apiUrl = 'http://127.0.0.1/api/action.php';
   isSubmitting = false;
 
   constructor(
@@ -41,60 +42,34 @@ export class BantuanPage implements OnInit {
     }
 
     this.isSubmitting = true;
-    const headers = new HttpHeaders()
-      .set('Content-Type', 'application/json')
-      .set('Accept', 'application/json');
 
     const formData = {
-      aksi: 'validate_user',
-      username: this.bantuanForm.get('username')?.value,
-      email: this.bantuanForm.get('email')?.value
-    };
-
-    this.http.post(this.apiUrl, formData, { headers })
-      .subscribe({
-        next: (validationResponse: any) => {
-          console.log('Validation response:', validationResponse);
-          if (validationResponse.success) {
-            this.submitBantuan(headers);
-          } else {
-            this.isSubmitting = false;
-            this.showAlert('Error', validationResponse.message || 'Username atau email tidak terdaftar');
-          }
-        },
-        error: (error) => {
-          console.error('Validation error:', error);
-          this.isSubmitting = false;
-          this.showAlert('Error', 'Gagal melakukan validasi user');
-        }
-      });
-  }
-
-  private submitBantuan(headers: HttpHeaders) {
-    const bantuanData = {
       aksi: 'add_bantuan',
       username: this.bantuanForm.get('username')?.value,
       email: this.bantuanForm.get('email')?.value,
       kendala: this.bantuanForm.get('kendala')?.value
     };
 
-    this.http.post(this.apiUrl, bantuanData, { headers })
-      .subscribe({
-        next: (response: any) => {
-          console.log('Bantuan response:', response);
-          this.isSubmitting = false;
-          if (response.success) {
-            this.showSuccessAlert('Sukses', 'Kendala berhasil dikirim');
-          } else {
-            this.showAlert('Error', response.message || 'Gagal mengirim kendala');
-          }
-        },
-        error: (error) => {
-          console.error('Submit bantuan error:', error);
-          this.isSubmitting = false;
-          this.showAlert('Error', 'Gagal mengirim data kendala');
+    console.log('Sending data:', formData); // Untuk debugging
+
+    this.http.post(this.apiUrl, formData).subscribe({
+      next: (response: any) => {
+        this.isSubmitting = false;
+        console.log('Response:', response); // Untuk debugging
+        
+        if (response.success) {
+          this.showSuccessAlert('Sukses', 'Kendala berhasil dikirim');
+          this.bantuanForm.reset();
+        } else {
+          this.showAlert('Error', response.message || 'Gagal mengirim kendala');
         }
-      });
+      },
+      error: (error) => {
+        console.error('Error:', error); // Untuk debugging
+        this.isSubmitting = false;
+        this.showAlert('Error', 'Gagal mengirim data kendala. Silakan coba lagi.');
+      }
+    });
   }
 
   private async showAlert(header: string, message: string) {
@@ -113,7 +88,6 @@ export class BantuanPage implements OnInit {
       buttons: [{
         text: 'OK',
         handler: () => {
-          this.bantuanForm.reset();
           this.router.navigate(['/tabs/tab2']);
         }
       }]
