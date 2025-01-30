@@ -1,34 +1,37 @@
 <ion-header>
   <ion-toolbar>
-    <ion-icon class="bk" name="book"></ion-icon>
-    <ion-title class="kamus">
-      KAMUS PERMO
-    </ion-title>
+    <div class="header-content">
+      <ion-icon class="bk" name="book"></ion-icon>
+      <ion-title class="kamus">
+        KAMUS PERMO
+      </ion-title>
 
-    <ion-fab>
-      <ion-fab-button href="/tabs/tab2">
-        <ion-icon name="arrow-back-outline"></ion-icon>
-      </ion-fab-button>
-    </ion-fab>
+      <ion-fab>
+        <ion-fab-button href="/tabs/tab2">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
 
-    <ion-searchbar class="search" 
-    [(ngModel)]="searchText" 
-    placeholder="Cari di sini" 
-    showCancelButton="focus" 
-    animated>
-    </ion-searchbar>
-
+      <ion-searchbar class="search" 
+        [(ngModel)]="searchText" 
+        placeholder="Cari di sini" 
+        showCancelButton="focus" 
+        animated>
+      </ion-searchbar>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 
 <ion-content [fullscreen]="true">
-  <ion-list class="ilm">
-    <ion-item *ngFor="let t of tumbuhan | filter: searchText" (click)="goToDetail(t)">
-      <ion-label>
-        <h3>{{t.title}}</h3>
-        <p>{{t.description}}</p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  <div class="content-container">
+    <ion-list class="ilm">
+      <ion-item *ngFor="let t of tumbuhan | filter: searchText" (click)="goToDetail(t)">
+        <ion-label>
+          <h3>{{t.title}}</h3>
+          <p>{{t.description}}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
 </ion-content>
