@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PostProvider } from '../../provider/post-provider';
 import { Router } from '@angular/router';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab4',
@@ -20,6 +20,7 @@ export class Tab4Page implements OnInit {
     private router: Router,
     private postPvdr: PostProvider,
     public toastController: ToastController,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -73,6 +74,31 @@ export class Tab4Page implements OnInit {
         }
       });
     });
+  }
+
+  async confirmDelete() {
+    const alert = await this.alertController.create({
+      header: 'Konfirmasi',
+      message: 'Yakin ingin menghapus akun?',
+      buttons: [
+        {
+          text: 'Tidak',
+          role: 'cancel',
+          handler: () => {
+            // Navigasi ke halaman ganti password ketika user memilih 'Tidak'
+            this.router.navigateByUrl('/tabs/tab4');
+          }
+        },
+        {
+          text: 'Ya',
+          handler: () => {
+            this.deleteData();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   async deleteData() {
