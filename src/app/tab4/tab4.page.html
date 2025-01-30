@@ -14,7 +14,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content 
       pullingIcon="arrow-dropdown" 
-      pullingText="Pull to refresh" 
+      pullingText="Tarik untuk Pembaharuan Data" 
       refreshingSpinner="circles"
       refreshingText="Memperbarui...">
     </ion-refresher-content>
@@ -50,7 +50,7 @@
               (click)="togglePasswordVisibility()">
               <ion-icon 
                 [name]="showPassword ? 'eye-off' : 'eye'" 
-                color="primary">
+                color="primary" class="password-toggle">
               </ion-icon>
             </ion-button>
           </ion-item>
@@ -70,7 +70,7 @@
   <ion-infinite-scroll (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
-      loadingText="Memuat lebih banyak data...">
+      loadingText="........">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
