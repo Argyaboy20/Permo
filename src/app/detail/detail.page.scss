@@ -1,3 +1,8 @@
+ion-content {
+  --background: url('/assets/bg_halamandepan.png') no-repeat center center fixed;
+  --background-size: cover;
+}
+
 .kms {
     margin-left: 50px;
 }
@@ -11,6 +16,15 @@
     margin-left: 55px;
     margin-top: 0px;
     font-family: Tahoma;
+}
+
+ion-card {
+    margin: 20px;
+}
+
+ion-note {
+  font-size: 13px;
+  margin-top: -5px;
 }
 
 ion-fab-button::part(native) {

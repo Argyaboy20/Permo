@@ -25,7 +25,7 @@ export class KamusPage implements OnInit {
     { id: 13, title: 'PADI', description: 'Nama latin: Oryza Sativa'},
     { id: 14, title: 'RAMBUTAN', description: 'Nama latin: Nephelium Lappaceum'},
     { id: 15, title: 'SALAK', description: 'Nama latin: Salacca Zalacca'},
-    { id: 16, title: 'TERUNG', description: 'Nama latin: Solanum Melongena'},
+    { id: 16, title: 'TERONG', description: 'Nama latin: Solanum Melongena'},
     { id: 17, title: 'UBI JALAR', description: 'Nama latin: Ipomoea Batatas'},
     { id: 18, title: 'WORTEL', description: 'Nama latin: Daucus Carota'},
   ];
@@ -38,9 +38,7 @@ export class KamusPage implements OnInit {
   }
 
   goToDetail(tumbuhan: any){
-    this.router.navigate(['/detail'],{
-      queryParams: tumbuhan
-    });
+    this.router.navigate(['/detail', tumbuhan.id]); 
   }
 
 }

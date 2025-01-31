@@ -12,11 +12,8 @@
 
 <ion-content>
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content 
-      pullingIcon="arrow-dropdown" 
-      pullingText="Tarik untuk Pembaharuan Data" 
-      refreshingSpinner="circles"
-      refreshingText="Memperbarui...">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Tarik untuk Pembaharuan Data"
+      refreshingSpinner="circles" refreshingText="Memperbarui...">
     </ion-refresher-content>
   </ion-refresher>
 
@@ -26,7 +23,7 @@
         <ion-card-header>
           <ion-card-title>INFORMASI AKUN</ion-card-title>
         </ion-card-header>
-        
+
         <ion-card-content>
           <ion-item>
             <ion-label position="stacked">Username</ion-label>
@@ -44,13 +41,8 @@
               <span *ngIf="!showPassword">********</span>
               <span *ngIf="showPassword">{{ daftar.konfirmasi }}</span>
             </ion-text>
-            <ion-button 
-              fill="clear" 
-              slot="end" 
-              (click)="togglePasswordVisibility()">
-              <ion-icon 
-                [name]="showPassword ? 'eye-off' : 'eye'" 
-                color="primary" class="password-toggle">
+            <ion-button fill="clear" slot="end" (click)="togglePasswordVisibility()">
+              <ion-icon [name]="showPassword ? 'eye-off' : 'eye'" class="password-toggle">
               </ion-icon>
             </ion-button>
           </ion-item>
@@ -68,17 +60,15 @@
   </div>
 
   <ion-infinite-scroll (ionInfinite)="loadData($event)">
-    <ion-infinite-scroll-content
-      loadingSpinner="bubbles"
-      loadingText="........">
+    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="........">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
 
-  <ion-button color="danger" shape="round" class="footer" (click)="confirmDelete()"> 
-  <a>
-    HAPUS AKUN
-  </a>
-</ion-button>
+  <ion-button color="danger" shape="round" class="footer" (click)="confirmDelete()">
+    <a>
+      HAPUS AKUN
+    </a>
+  </ion-button>
 
 </ion-content>
