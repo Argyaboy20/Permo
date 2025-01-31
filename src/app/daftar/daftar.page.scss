@@ -38,7 +38,7 @@ body {
 
 .form-group {
     margin-top: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .btn {
@@ -66,6 +66,18 @@ body {
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8em;
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-bottom: -20px;
+}
+
+ion-textarea.ng-invalid.ng-touched {
+    --border-color: red;
 }
 
 /* Tiny Mobile Devices (320px - 375px) */

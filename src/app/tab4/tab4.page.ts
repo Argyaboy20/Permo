@@ -12,7 +12,7 @@ export class Tab4Page implements OnInit {
 
   daftars: any[] = [];
   limit: number = 1;
-  start: number = 0;
+  start: number = 1;
   id: string = '';
   showPassword: boolean = false;
 

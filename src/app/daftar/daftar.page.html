@@ -7,30 +7,97 @@
             <h1>Pendaftaran Akun Baru</h1>
         </div>
 
-        <div class="form-group" [formGroup]="registerForm.getForm()">
-            <ion-textarea [(ngModel)]="username" label="Username" labelPlacement="floating" 
-            fill="outline" placeholder="Ketik username di sini" type="text" formControlName="username"></ion-textarea>
-        </div>
+        <form [formGroup]="registerForm.getForm()" (ngSubmit)="addRegister()">
+            <div class="form-group">
+                <ion-textarea 
+                    [(ngModel)]="username" 
+                    label="Username" 
+                    labelPlacement="floating" 
+                    fill="outline" 
+                    placeholder="Ketik username di sini" 
+                    type="text" 
+                    formControlName="username">
+                </ion-textarea>
+                <div *ngIf="registerForm.getForm().get('username')?.invalid && 
+                            (registerForm.getForm().get('username')?.dirty || 
+                             registerForm.getForm().get('username')?.touched)" 
+                     class="error-message">
+                    <small *ngIf="registerForm.getForm().get('username')?.errors?.['required']" class="text-danger">
+                        Username harus diisi
+                    </small>
+                </div>
+            </div>
 
-        <div class="form-group" [formGroup]="registerForm.getForm()">
-            <ion-textarea [(ngModel)]="email" fill="solid" label="Email" labelPlacement="floating" 
-            fill="outline" placeholder="Ketik email di sini" type="email" formControlName="email"></ion-textarea>
-        </div>
+            <div class="form-group">
+                <ion-textarea 
+                    [(ngModel)]="email" 
+                    label="Email" 
+                    labelPlacement="floating" 
+                    fill="outline" 
+                    placeholder="Ketik email di sini" 
+                    type="email" 
+                    formControlName="email">
+                </ion-textarea>
+                <div *ngIf="registerForm.getForm().get('email')?.invalid && 
+                            (registerForm.getForm().get('email')?.dirty || 
+                             registerForm.getForm().get('email')?.touched)" 
+                     class="error-message">
+                    <small *ngIf="registerForm.getForm().get('email')?.errors?.['required']" class="text-danger">
+                        Email harus diisi
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('email')?.errors?.['email']" class="text-danger">
+                        Format email tidak valid
+                    </small>
+                </div>
+            </div>
 
-        <div class="form-group" [formGroup]="registerForm.getForm()">
-            <ion-textarea [(ngModel)]="pss" label="Password" labelPlacement="floating" 
-            fill="outline" placeholder="Ketik password di sini" type="text" formControlName="pass" ></ion-textarea>
-        </div>
+            <div class="form-group">
+                <ion-textarea 
+                    [(ngModel)]="pss" 
+                    label="Password" 
+                    labelPlacement="floating" 
+                    fill="outline" 
+                    placeholder="Ketik password di sini" 
+                    type="password" 
+                    formControlName="pass">
+                </ion-textarea>
+                <div *ngIf="registerForm.getForm().get('pass')?.invalid && 
+                            (registerForm.getForm().get('pass')?.dirty || 
+                             registerForm.getForm().get('pass')?.touched)" 
+                     class="error-message">
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['required']" class="text-danger">
+                        Password harus diisi
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['minlength']" class="text-danger">
+                        Password minimal 6 karakter
+                    </small>
+                </div>
+            </div>
 
-        <div class="form-group" [formGroup]="registerForm.getForm()">
-            <ion-textarea  [(ngModel)]="konfirmasi" label="Konfirmasi Password" labelPlacement="floating" 
-            fill="outline" placeholder="Masukkan secara lengkap dan sesuai" type="text" formControlName="konfirmasi"></ion-textarea>
-        </div>
+            <div class="form-group">
+                <ion-textarea 
+                    [(ngModel)]="konfirmasi" 
+                    label="Konfirmasi Password" 
+                    labelPlacement="floating" 
+                    fill="outline" 
+                    placeholder="Masukkan secara lengkap dan sesuai" 
+                    type="password" 
+                    formControlName="konfirmasi">
+                </ion-textarea>
+                <div *ngIf="registerForm.getForm().get('konfirmasi')?.invalid && 
+                            (registerForm.getForm().get('konfirmasi')?.dirty || 
+                             registerForm.getForm().get('konfirmasi')?.touched)" 
+                     class="error-message">
+                    <small *ngIf="registerForm.getForm().get('konfirmasi')?.errors?.['isntMatching']" class="text-danger">
+                        Konfirmasi password tidak sesuai
+                    </small>
+                </div>
+            </div>
 
-            <ion-button type="submit" class="btn" (click)="addRegister()">
+            <ion-button type="submit" class="btn" [disabled]="!registerForm.getForm().valid">
                 DAFTAR
             </ion-button>
-
+        </form>
         
         <div class="footer">    
             <p>Sudah punya akun? <a href="/tabs/tab1">Masuk</a></p>

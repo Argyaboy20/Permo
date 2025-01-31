@@ -79,7 +79,9 @@ ion-fab-button::part(native):active::after {
 
 /* Tiny Mobile Devices (320px - 374px) */
 @media screen and (min-width: 320px) and (max-width: 374px) {
-    body {
+    ion-content {
+        background: url('/assets/bg_halamandepan.png') no-repeat center center fixed;
+        background-size: cover;
         min-height: 480px;
         max-height: 885px;
         padding: 10px;
@@ -118,6 +120,14 @@ ion-fab-button::part(native):active::after {
 
  /* Small Mobile Devices (375px - 575px) */
  @media screen and (min-width: 375px) and (max-width: 575px) {
+    ion-content {
+        background: url('/assets/bg_halamandepan.png') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 668px;
+        max-height: 932px;
+        padding: 15px;
+    }
+
     .tit {
         font-family: 'Lucida Sans';    
     }
@@ -142,5 +152,35 @@ ion-fab-button::part(native):active::after {
 
     .footer {
         margin-top: -20px auto;
+    }
+}
+
+/* Tablets (576px - 768px) */
+@media screen and (min-width: 576px) and (max-width: 768px) {
+    ion-content {
+        background: url('/assets/bg_halamandepan.png') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 880px;
+        max-height: 1050px;
+        padding: 15px;
+    }
+}
+
+/* Large Tablets (769px - 999px) */
+@media screen and (min-width: 769px) and (max-width: 999px) {
+    ion-content {
+        background: url('/assets/bg_halamandepan.png') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 1190px;
+        max-height: 1400px;
+        padding: 15px;
+    }
+}
+
+/* Desktop (1000px and above) */
+@media screen and (min-width: 1000px) {
+    ion-content {
+        background: url('/assets/bg_halamandepan.png') no-repeat center center fixed;
+        background-size: cover;
     }
 }
