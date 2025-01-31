@@ -350,4 +350,34 @@ switch ($aksi) {
             'message' => 'Invalid action'
         ]);
         break;
+
+    case "get_tumbuhan_detail":
+        $id = filter_var($postjson['id'], FILTER_SANITIZE_NUMBER_INT);
+
+        try {
+            $sql = "SELECT * FROM kamus WHERE id = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $tumbuhan = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($tumbuhan) {
+                echo json_encode([
+                    'success' => true,
+                    'result' => $tumbuhan
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Tumbuhan tidak ditemukan'
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        break;
 }
