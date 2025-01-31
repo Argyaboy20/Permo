@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard, LoginGuard } from './guards/auth.guard';
 
 const routes: Routes = [
 
@@ -7,6 +8,20 @@ const routes: Routes = [
     path: '',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule)
   },
+
+  {
+    path: 'tabs/tab1',
+    loadChildren: () => import('./tab1/tab1.module').then(m => m.Tab1PageModule),
+    canActivate: [LoginGuard] // Prevents accessing login page when already logged in
+  },
+  {
+    path: 'tabs/tab2',
+    loadChildren: () => import('./tab2/tab2.module').then(m => m.Tab2PageModule),
+    canActivate: [AuthGuard] // Prevents accessing dashboard when not logged in
+  },
+
+
+
 
   {
     path: 'tab',
@@ -17,7 +32,6 @@ const routes: Routes = [
     path: 'halamanutama',
     loadChildren: () => import('./halamanutama/halamanutama.module').then( m => m.HalamanutamaPageModule),
   },
-
 
   {
     path: 'tab2',
@@ -76,7 +90,8 @@ const routes: Routes = [
   {
     path: 'gantipassword',
     loadChildren: () => import('./gantipassword/gantipassword.module').then( m => m.GantipasswordPageModule)
-  },  {
+  },
+  {
     path: 'bantuan',
     loadChildren: () => import('./bantuan/bantuan.module').then( m => m.BantuanPageModule)
   },

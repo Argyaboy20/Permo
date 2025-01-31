@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PostProvider } from '../../provider/post-provider';
 import { Router } from '@angular/router';
-import { ToastController, LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController, Platform } from '@ionic/angular';
+import { App } from '@capacitor/app';
 
 @Component({
   selector: 'app-tab1',
@@ -11,17 +12,39 @@ import { ToastController, LoadingController } from '@ionic/angular';
 export class Tab1Page implements OnInit {
   username: string = '';
   konfirmasi: string = '';
+  private backButtonSubscription: any;
 
   constructor(
     private postPvdr: PostProvider,
     private router: Router,
     public toastController: ToastController,
-    public loadingController: LoadingController
+    public loadingController: LoadingController,
+    private platform: Platform
   ) { }
 
   ngOnInit() {
     // Clear any existing session data
-    localStorage.clear();
+    if (!localStorage.getItem('userId')) {
+      localStorage.clear();
+    }
+
+    // Handle back button
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      if (localStorage.getItem('userId')) {
+        // If logged in, prevent going back
+        return;
+      } else {
+        // If not logged in, exit app
+        App.exitApp();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    // Clean up the subscription
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
   }
 
   async login() {
@@ -66,9 +89,9 @@ export class Tab1Page implements OnInit {
           this.presentToast('Login berhasil');
 
           // Pindah ke halaman dashboard
-          this.router.navigate(['/tabs/tab2']);
+          this.router.navigate(['/tabs/tab2'], { replaceUrl: true });
         } else {
-          console.log('Login failed:', data.message); // Debug log
+          console.log('Login failed:', data.message);
           this.presentToast('Username atau password salah');
         }
       },
