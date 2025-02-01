@@ -11,32 +11,37 @@
 </ion-header>
 
 <ion-content>
-  <h3 class="h3">{{tumbuhan.title}}</h3>
-  <p class="p">Nama Latin: {{tumbuhan.latinName}}</p>
+  <div class="content-container">
+    <h3 class="h3">{{tumbuhan.title}}</h3>
+    <p class="p">Nama Latin: {{tumbuhan.latinName}}</p>
 
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Detail Tumbuhan</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <ion-list>
-        <ion-item>
-          <ion-label>Suhu :</ion-label>
-          <ion-note slot="end">{{tumbuhan.suhu}}</ion-note>
-        </ion-item>
-        <ion-item>
-          <ion-label>Jenis Tanah :</ion-label>
-          <ion-note slot="end">{{tumbuhan.tanah}}</ion-note>
-        </ion-item>
-        <ion-item>
-          <ion-label>Kebutuhan Sinar Matahari :</ion-label>
-          <ion-note slot="end">{{tumbuhan.sinarmatahari}}</ion-note>
-        </ion-item>
-        <ion-item>
-          <ion-label>Kebutuhan Air :</ion-label>
-          <ion-note slot="end">{{tumbuhan.air}}</ion-note>
-        </ion-item>
-      </ion-list>
-    </ion-card-content>
-  </ion-card>
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Detail Tumbuhan</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="detail-list">
+          <div class="detail-item">
+            <div class="label">Suhu</div>
+            <div class="value">{{tumbuhan.suhu}}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="label">Jenis Tanah</div>
+            <div class="value">{{tumbuhan.tanah}}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="label">Kebutuhan Sinar Matahari</div>
+            <div class="value">{{tumbuhan.sinarmatahari}}</div>
+          </div>
+          
+          <div class="detail-item">
+            <div class="label">Kebutuhan Air</div>
+            <div class="value">{{tumbuhan.air}}</div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>
