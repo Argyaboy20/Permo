@@ -380,4 +380,34 @@ switch ($aksi) {
             ]);
         }
         break;
+
+    case "get_tanah_detail":
+        $id = filter_var($postjson['id'], FILTER_SANITIZE_NUMBER_INT);
+
+        try {
+            $sql = "SELECT * FROM tanah WHERE id = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $tanah = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($tanah) {
+                echo json_encode([
+                    'success' => true,
+                    'result' => $tanah
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Data tanah tidak ditemukan'
+                ]);
+            }
+        } catch (PDOException $e) {
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        break;
 }
