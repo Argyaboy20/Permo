@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { LoadingController, AlertController, Platform } from '@ionic/angular';
 import { environment } from '../../environments/environment';
-import { App } from '@capacitor/app';
+import { catchError, timeout } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-tab3',
@@ -11,13 +12,14 @@ import { App } from '@capacitor/app';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page implements OnInit {
-  temperature: number = 0;
-  humidity: number = 0;
-  soilMoisture: number = 0;
+  temperature: number | null = null;
+  humidity: number | null = null;
+  soilMoisture: number | null = null;
   locationName: string = '';
   suitableCrops: any[] = [];
   errorMessage: string = '';
   isLocationEnabled: boolean = false;
+  isLoading: boolean = false;
 
   private crops = [
     { name: 'Sawit', idealTemp: '24-28°C', minTemp: 24, maxTemp: 28 },
@@ -28,9 +30,9 @@ export class Tab3Page implements OnInit {
     { name: 'Jagung', idealTemp: '21-34°C', minTemp: 21, maxTemp: 34 }
   ];
 
-  // Gunakan environment variable untuk API key
+  private readonly WEATHER_API_URL = 'https://api.weatherapi.com/v1/current.json';
   private readonly WEATHER_API_KEY = environment.weatherApiKey;
-  private readonly WEATHER_API_URL = 'https://data.api.xweather.com/forecasts/:auto?format=json&filter=3hr&limit=7&fields=periods.maxTempC,loc,periods.minTempC,periods.weather,periods.minHumidity,periods.maxHumidity&client_id=HE8pD71uXLahgk3jpnVLp&client_secret=JP97rR0GHR5792BnhOOuKr0zryWT65VAfxZp06mX';
+  private readonly API_TIMEOUT = 15000; // Increased timeout to 15 seconds
 
   constructor(
     private http: HttpClient,
@@ -41,121 +43,146 @@ export class Tab3Page implements OnInit {
 
   async ngOnInit() {
     await this.platform.ready();
-    this.platform.resume.subscribe(async () => {
-      // Check permissions again when app resumes
-      await this.initializeApp();
-    });
-    await this.initializeApp();
+    await this.initializeLocation();
   }
 
-  private async initializeApp() {
-    try {
-      await this.checkPermissions();
-      if (this.isLocationEnabled) {
-        await this.getCurrentLocation();
-        
-        // Update setiap 5 menit
-        setInterval(() => {
-          this.getCurrentLocation();
-        }, 300000);
-      }
-    } catch (error) {
-      console.error('Error in initialization:', error);
-      this.handleError(error);
-    }
-  }
-
-  async checkPermissions() {
+  private async initializeLocation() {
     try {
       const status = await Geolocation.checkPermissions();
       
-      if (status.location === 'prompt' || status.location === 'prompt-with-rationale') {
-        const permission = await Geolocation.requestPermissions();
-        this.isLocationEnabled = permission.location === 'granted';
+      if (status.location === 'granted') {
+        this.isLocationEnabled = true;
+        await this.getCurrentLocation();
       } else {
-        this.isLocationEnabled = status.location === 'granted';
+        await this.requestLocationPermission();
       }
+    } catch (error) {
+      console.error('Initialization error:', error);
+      this.handleError('Mohon aktifkan GPS Anda');
+    }
+  }
 
-      if (!this.isLocationEnabled) {
+  private async requestLocationPermission() {
+    try {
+      const permission = await Geolocation.requestPermissions();
+      this.isLocationEnabled = permission.location === 'granted';
+      
+      if (this.isLocationEnabled) {
+        await this.getCurrentLocation();
+      } else {
         await this.showLocationPermissionAlert();
       }
     } catch (error) {
-      console.error('Permission error:', error);
-      this.handleError(new Error('Izin lokasi diperlukan'));
+      console.error('Permission request error:', error);
+      this.handleError('Silakan aktifkan izin lokasi di pengaturan');
     }
   }
 
   async getCurrentLocation(event?: any) {
-    if (!this.isLocationEnabled) {
-      this.handleError(new Error('Izin lokasi tidak diberikan'));
-      if (event) event.target.complete();
-      return;
-    }
-
-    const loading = await this.loadingCtrl.create({
-      message: 'Mengambil data cuaca...',
-      duration: 10000 // timeout after 10 seconds
-    });
-    await loading.present();
-
     try {
+      this.errorMessage = '';
+      this.isLoading = true;
+
       const coordinates = await Geolocation.getCurrentPosition({
-        timeout: 5000,
+        timeout: 30000,
         enableHighAccuracy: true
       });
 
-      await this.getWeatherData(coordinates.coords.latitude, coordinates.coords.longitude);
-      this.updateCropRecommendations();
-      this.errorMessage = ''; // Clear any previous error messages
-    } catch (error) {
-      this.handleError(error);
+      if (coordinates && coordinates.coords) {
+        await this.getWeatherData(coordinates.coords.latitude, coordinates.coords.longitude);
+        this.updateCropRecommendations();
+      } else {
+        throw new Error('Koordinat tidak valid');
+      }
+    } catch (error: any) {
+      console.error('Location error:', error);
+      this.handleLocationError(error);
     } finally {
-      loading.dismiss();
-      if (event) event.target.complete();
+      this.isLoading = false;
+      if (event) {
+        event.target.complete();
+      }
     }
   }
 
-  private async getWeatherData(lat: number, lon: number) {
-    if (!this.WEATHER_API_KEY) {
-      throw new Error('API key tidak ditemukan');
+  private handleLocationError(error: any) {
+    if (error.code === 1) {
+      this.showLocationPermissionAlert();
+    } else if (error.code === 2) {
+      this.handleError('GPS tidak aktif. Mohon aktifkan GPS Anda');
+    } else if (error.code === 3) {
+      this.handleError('Koneksi timeout. Periksa koneksi internet Anda');
+    } else if (error.message) {
+      this.handleError(error.message);
+    } else {
+      this.handleError('Terjadi kesalahan saat mengakses lokasi');
     }
+  }
 
-    const url = `${this.WEATHER_API_URL}?lat=${lat}&lon=${lon}&units=metric&appid=${this.WEATHER_API_KEY}`;
-    
+  private async getWeatherData(lat: number, lon: number): Promise<void> {
     try {
-      const response: any = await this.http.get(url).toPromise();
-      
-      if (!response || !response.main) {
-        throw new Error('Data cuaca tidak valid');
-      }
+      // Membuat parameter query
+      const params = new HttpParams()
+        .set('key', this.WEATHER_API_KEY)
+        .set('q', `${lat},${lon}`);
 
-      this.temperature = Math.round(response.main.temp);
-      this.humidity = response.main.humidity;
-      this.locationName = response.name;
-      this.soilMoisture = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
-    } catch (error) {
-      throw new Error('Gagal mengambil data cuaca');
+      // Membuat header request
+      const headers = new HttpHeaders()
+        .set('Accept', 'application/json');
+
+      const response = await this.http.get<any>(this.WEATHER_API_URL, { params, headers })
+        .pipe(
+          timeout(10000),
+          catchError((error) => {
+            console.error('API Error:', error);
+            let message = 'Gagal mengambil data cuaca';
+            
+            if (error.status === 401) {
+              message = 'Kesalahan autentikasi API';
+            } else if (error.status === 403) {
+              message = 'Akses API ditolak';
+            } else if (!navigator.onLine) {
+              message = 'Tidak ada koneksi internet';
+            }
+            
+            return throwError(() => new Error(message));
+          })
+        )
+        .toPromise();
+
+      if (response && response.current) {
+        this.temperature = Math.round(response.current.temp_c);
+        this.humidity = response.current.humidity;
+        this.locationName = response.location.name;
+        this.soilMoisture = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
+      } else {
+        throw new Error('Data cuaca tidak lengkap');
+      }
+    } catch (error: any) {
+      console.error('Weather data error:', error);
+      throw error;
     }
   }
 
   private updateCropRecommendations() {
+    if (this.temperature === null) return;
+    
     this.suitableCrops = this.crops.filter(crop => 
-      this.temperature >= crop.minTemp && 
-      this.temperature <= crop.maxTemp &&
-      this.soilMoisture >= 50 && 
-      this.soilMoisture <= 70
+      this.temperature! >= crop.minTemp && 
+      this.temperature! <= crop.maxTemp &&
+      this.soilMoisture! >= 50 && 
+      this.soilMoisture! <= 70
     );
   }
 
   private async showLocationPermissionAlert() {
     const alert = await this.alertController.create({
       header: 'Izin Lokasi Diperlukan',
-      message: 'Aplikasi ini memerlukan akses ke lokasi Anda untuk menampilkan informasi cuaca yang akurat. Mohon aktifkan izin lokasi di pengaturan perangkat Anda.',
+      message: 'Aplikasi ini memerlukan akses ke lokasi Anda untuk menampilkan informasi cuaca yang akurat.',
       buttons: [
         {
           text: 'Buka Pengaturan',
           handler: () => {
-            // Buka pengaturan lokasi perangkat
             if (this.platform.is('android')) {
               window.open('location-settings:');
             } else if (this.platform.is('ios')) {
@@ -164,36 +191,18 @@ export class Tab3Page implements OnInit {
           }
         },
         {
-          text: 'Batal',
-          role: 'cancel'
+          text: 'Coba Lagi',
+          handler: () => {
+            this.initializeLocation();
+          }
         }
       ]
     });
     await alert.present();
   }
 
-  private async handleError(error: any) {
-    console.error('Application error:', error);
-    
-    let message = 'Terjadi kesalahan yang tidak diketahui';
-    
-    if (error.message) {
-      message = error.message;
-    } else if (typeof error === 'string') {
-      message = error;
-    }
-
-    // Update error message for display in template
+  private handleError(message: string) {
     this.errorMessage = message;
-
-    // Show alert for critical errors
-    if (message.includes('Izin lokasi') || message.includes('API key')) {
-      const alert = await this.alertController.create({
-        header: 'Peringatan',
-        message: message,
-        buttons: ['OK']
-      });
-      await alert.present();
-    }
+    this.isLoading = false;
   }
 }
