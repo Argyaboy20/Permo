@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  weatherApiKey: 'JP97rR0GHR5792BnhOOuKr0zryWT65VAfxZp06mX' // Ganti dengan API key Anda
+  weatherApiKey: 'JP97rR0GHR5792BnhOOuKr0zryWT65VAfxZp06mX' // API WEATHER
 };
 /*
  * For easier debugging in development mode, you can import the following file

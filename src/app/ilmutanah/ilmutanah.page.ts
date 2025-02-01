@@ -35,9 +35,7 @@ export class IlmutanahPage implements OnInit {
   }
 
   goToIsi(tanah: any){
-    this.router.navigate(['/detailtanah'],{
-      queryParams: tanah
-    });
-  }
+  this.router.navigate(['/detailtanah', tanah.id]); // Update routing method
+}
 
 }
