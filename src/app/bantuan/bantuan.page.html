@@ -7,25 +7,45 @@
 
     <form [formGroup]="bantuanForm" (ngSubmit)="submitForm()">
       <div class="form-group">
-        <ion-textarea label="Username" labelPlacement="floating" fill="outline" placeholder="Ketik username di sini"
-          formControlName="username" [class.invalid]="isFieldInvalid('username')"></ion-textarea>
+        <ion-textarea 
+          label="Username" 
+          labelPlacement="floating" 
+          fill="outline" 
+          placeholder="Ketik username di sini"
+          formControlName="username" 
+          [class.invalid]="isFieldInvalid('username')"
+        ></ion-textarea>
         <div class="error-message" *ngIf="isFieldInvalid('username')">
-          Username tidak ditemukan
+          {{ getErrorMessage('username') }}
         </div>
       </div>
 
       <div class="form-group">
-        <ion-textarea label="Email" labelPlacement="floating" fill="outline" placeholder="Ketik email di sini"
-          formControlName="email" [class.invalid]="isFieldInvalid('email')"></ion-textarea>
+        <ion-textarea 
+          label="Email" 
+          labelPlacement="floating" 
+          fill="outline" 
+          placeholder="Ketik email di sini"
+          formControlName="email" 
+          [class.invalid]="isFieldInvalid('email')"
+        ></ion-textarea>
         <div class="error-message" *ngIf="isFieldInvalid('email')">
-          Email tidak valid atau tidak ditemukan
+          {{ getErrorMessage('email') }}
         </div>
       </div>
 
       <div class="form-group kendala-group">
         <ion-item class="kendala-item">
-          <ion-textarea formControlName="kendala" label="Kendala" labelPlacement="floating" placeholder="Ada yang bisa dibantu?" class="ken" autoGrow="true" rows="4"
-            maxlength="1000"></ion-textarea>
+          <ion-textarea 
+            formControlName="kendala" 
+            label="Kendala" 
+            labelPlacement="floating" 
+            placeholder="Ada yang bisa dibantu?" 
+            class="ken" 
+            autoGrow="true" 
+            rows="4"
+            maxlength="1000"
+          ></ion-textarea>
         </ion-item>
       </div>
 
