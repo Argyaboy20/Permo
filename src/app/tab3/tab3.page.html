@@ -4,6 +4,12 @@
     <ion-title class="pred">
       PREDIKSI CUACA
     </ion-title>
+    
+    <ion-fab>
+      <ion-fab-button href="/tabs/tab2">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-fab-button>
+    </ion-fab>
   </ion-toolbar>
 </ion-header>
 
@@ -29,7 +35,13 @@
     <ion-card>
       <ion-card-header>
         <ion-card-title>Informasi Cuaca</ion-card-title>
-        <ion-card-subtitle>{{ locationName || 'Memuat lokasi...' }}</ion-card-subtitle>
+        <ion-card-subtitle>
+          {{ locationName || 'Memuat lokasi...' }}
+          <div class="time-display">
+            <ion-icon name="time-outline"></ion-icon>
+            {{ currentTime }}
+          </div>
+        </ion-card-subtitle>
       </ion-card-header>
 
       <ion-card-content>
