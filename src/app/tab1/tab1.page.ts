@@ -23,75 +23,60 @@ export class Tab1Page implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Clear any existing session data
-    if (!localStorage.getItem('userId')) {
-      localStorage.clear();
-    }
+    // Clear all storage on init
+    localStorage.clear();
+    sessionStorage.clear();
 
-    // Handle back button
     this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
-      if (localStorage.getItem('userId')) {
-        // If logged in, prevent going back
+      if (sessionStorage.getItem('currentUser')) {
         return;
       } else {
-        // If not logged in, exit app
         App.exitApp();
       }
     });
   }
 
   ngOnDestroy() {
-    // Clean up the subscription
     if (this.backButtonSubscription) {
       this.backButtonSubscription.unsubscribe();
     }
   }
 
   async login() {
-    console.log('Starting login process...', {
-      username: this.username,
-      konfirmasi: this.konfirmasi
-    });
-
-    // Validasi input
     if (!this.username?.trim() || !this.konfirmasi?.trim()) {
       this.presentToast('Mohon isi username dan password');
       return;
     }
 
-    // Tampilkan loading
     const loading = await this.loadingController.create({
       message: 'Mohon tunggu...',
       spinner: 'circles'
     });
     await loading.present();
 
-    // Siapkan data untuk dikirim ke server
     const body = {
       username: this.username,
       konfirmasi: this.konfirmasi,
       aksi: 'login'
     };
 
-    // Kirim request ke server
     this.postPvdr.postData(body, 'action.php').subscribe({
       next: async (data: any) => {
-        console.log('Received response:', data);
         await loading.dismiss();
 
         if (data.success) {
-          // Simpan data user ke localStorage
-          localStorage.setItem('userId', data.id);
-          localStorage.setItem('userUsername', data.username);
-          localStorage.setItem('userKonfirmasi', data.konfirmasi);
-
-          // Tampilkan pesan sukses
+          // Store complete user data in sessionStorage
+          const userData = {
+            id: data.id,
+            username: data.username,
+            email: data.email,
+            konfirmasi: data.konfirmasi
+          };
+          sessionStorage.setItem('currentUser', JSON.stringify(userData));
+          
           this.presentToast('Login berhasil');
-
-          // Pindah ke halaman dashboard
           this.router.navigate(['/tabs/tab2'], { replaceUrl: true });
         } else {
-          console.log('Login failed:', data.message);
           this.presentToast('Username atau password salah');
         }
       },

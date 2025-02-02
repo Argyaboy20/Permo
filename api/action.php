@@ -105,51 +105,49 @@ switch ($aksi) {
         }
         break;
 
-    case "login":
-        try {
-            if (!isset($postjson['username']) || !isset($postjson['konfirmasi'])) {
-                throw new Exception('Username and password are required');
-            }
-
-            $username = trim($postjson['username']);
-            $konfirmasi = trim($postjson['konfirmasi']);
-
-
-            // Log input data
-            error_log("Login attempt - username: " . $username);
-
-            $sql = "SELECT * FROM daftar WHERE username = :username AND konfirmasi = :konfirmasi";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-            $stmt->bindParam(':konfirmasi', $konfirmasi, PDO::PARAM_STR);
-            $stmt->execute();
-
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            // Log query result
-            error_log("Query result: " . json_encode($user));
-
-            if ($user) {
-                echo json_encode([
-                    'success' => true,
-                    'id' => $user['id'],
-                    'username' => $user['username'],
-                    'konfirmasi' => $user['konfirmasi']
-                ]);
-            } else {
+        case "login":
+            try {
+                if (!isset($postjson['username']) || !isset($postjson['konfirmasi'])) {
+                    throw new Exception('Username and password are required');
+                }
+        
+                $username = trim($postjson['username']);
+                $konfirmasi = trim($postjson['konfirmasi']);
+        
+                error_log("Login attempt - username: " . $username);
+        
+                $sql = "SELECT * FROM daftar WHERE username = :username AND konfirmasi = :konfirmasi";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+                $stmt->bindParam(':konfirmasi', $konfirmasi, PDO::PARAM_STR);
+                $stmt->execute();
+        
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+                error_log("Query result: " . json_encode($user));
+        
+                if ($user) {
+                    echo json_encode([
+                        'success' => true,
+                        'id' => $user['id'],
+                        'username' => $user['username'],
+                        'email' => $user['email'],  // Add this line
+                        'konfirmasi' => $user['konfirmasi']
+                    ]);
+                } else {
+                    echo json_encode([
+                        'success' => false,
+                        'message' => 'Username atau password salah'
+                    ]);
+                }
+            } catch (PDOException $e) {
+                error_log("Database error: " . $e->getMessage());
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Username atau password salah'
+                    'message' => 'Error: ' . $e->getMessage()
                 ]);
             }
-        } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            echo json_encode([
-                'success' => false,
-                'message' => 'Error: ' . $e->getMessage()
-            ]);
-        }
-        break;
+            break;
 
     case "lupa_akun":
         $email = filter_var($postjson['email'], FILTER_SANITIZE_EMAIL);
@@ -266,37 +264,38 @@ switch ($aksi) {
         break;
 
     case "validate_user":
-        $username = trim($postjson['username'] ?? '');
-        $email = trim($postjson['email'] ?? '');
-
-        if (empty($username) || empty($email)) {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Username dan email harus diisi'
-            ]);
-            exit;
-        }
-
         try {
-            $sql = "SELECT id FROM daftar WHERE username = :username AND email = :email";
-            $stmt = $pdo->prepare($sql);
-            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            // Get the field to validate (either username or email)
+            $username = isset($postjson['username']) ? trim($postjson['username']) : null;
+            $email = isset($postjson['email']) ? trim($postjson['email']) : null;
+
+            if ($username !== null) {
+                $sql = "SELECT id FROM daftar WHERE username = :username";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            } elseif ($email !== null) {
+                $sql = "SELECT id FROM daftar WHERE email = :email";
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+            } else {
+                throw new Exception('No field provided for validation');
+            }
+
             $stmt->execute();
 
             if ($stmt->rowCount() > 0) {
                 echo json_encode([
                     'success' => true,
-                    'message' => 'User ditemukan'
+                    'message' => 'Data valid'
                 ]);
             } else {
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Username atau email tidak terdaftar'
+                    'message' => 'Data tidak ditemukan'
                 ]);
             }
-        } catch (PDOException $e) {
-            error_log("Validate user error: " . $e->getMessage());
+        } catch (Exception $e) {
+            error_log("Validation error: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat validasi'

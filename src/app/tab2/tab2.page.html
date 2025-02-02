@@ -30,8 +30,10 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
+        <div class="greeting-container">
+          <p class="greeting">{{ greeting }}, {{ username }}!</p>
+        </div>
         <ion-img class="gambar" src="/assets/permo.png" alt="Permo Logo"></ion-img>
-
         <ion-title class="jdl">PERMO</ion-title>
       </ion-toolbar>
     </ion-header>
@@ -39,42 +41,40 @@
 
   <body>
     <div class="wrapper">
+      <!-- Menu Kamus Permo -->
       <ion-card class="card">
         <ion-card-header>
           <ion-card-title class="judul">KAMUS PERMO</ion-card-title>
         </ion-card-header>
-
         <ion-card-content class="content">
           Pengetahuan tentang ilmu pertanian untuk berbagai jenis tumbuhan, seperti cara penanaman, suhu
           yang cocok, tanah yang cocok, dan lainnya.
         </ion-card-content>
-
         <ion-button class="jelajah" fill="clear" href="kamus">Jelajahi</ion-button>
       </ion-card>
 
+      <!-- Prediksi Cuaca -->
       <ion-card class="crd">
         <ion-card-header>
           <ion-card-title class="ttl">PREDIKSI CUACA</ion-card-title>
         </ion-card-header>
-
         <ion-card-content class="cntnt">
           Berisi perkiraan cuaca secara real time dan akurat, serta suhu yang cocok untuk menanam setiap jenis tumbuhan
         </ion-card-content>
-
         <ion-button class="jljh" fill="clear" href="/tabs/tab3">Jelajahi</ion-button>
       </ion-card>
 
+      <!-- Menu Ilmu Tanah -->
       <ion-card class="kartu">
         <ion-card-header>
           <ion-card-title class="ttl">ILMU TANAH</ion-card-title>
         </ion-card-header>
-
         <ion-card-content class="cntnt">
           Mengenal lebih jauh tentang jenis jenis tanah yang ada di Indonesia
         </ion-card-content>
-
         <ion-button class="jljh" fill="clear" href="ilmutanah">Jelajahi</ion-button>
       </ion-card>
+      
     </div>
   </body>
 </div>

@@ -54,8 +54,21 @@ body {
     margin-top: -79px;
 }
 
+.greeting-container {
+    margin-left: 20px;
+    margin-top: 0px;
+    margin-bottom: -30px;
+}
+
+.greeting {
+    color: #FFFFFF;
+    font-size: 16px;
+    margin: 0;
+    font-family: 'Lucida Sans';
+}
+
 .gambar {
-    margin-top: -30px;
+    margin-top: -50px;
     margin-bottom: 38px;
 }
 
@@ -132,7 +145,7 @@ body {
         max-height: 885px;
         padding: 10px;
     }
-    
+
     .jdl {
         margin-left: 200px;
         font-size: 16px;
@@ -150,7 +163,9 @@ body {
         flex-direction: column;
     }
 
-    .card, .crd, .kartu {
+    .card,
+    .crd,
+    .kartu {
         width: 280px;
         margin: 70px auto;
     }
@@ -164,19 +179,24 @@ body {
         margin-top: -10px;
     }
 
-    .judul, .ttl {
+    .judul,
+    .ttl {
         font-size: 18px;
     }
 
-    .content, .cntnt {
+    .content,
+    .cntnt {
         font-size: 12px;
     }
 
-    .jelajah, .jljh {
+    .jelajah,
+    .jljh {
         font-size: 13px;
     }
 
-    .ion-padding, .gan, .ban {
+    .ion-padding,
+    .gan,
+    .ban {
         width: 100%;
         margin-left: 0px;
         font-size: 13px;

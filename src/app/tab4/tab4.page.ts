@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { PostProvider } from '../../provider/post-provider';
 import { Router } from '@angular/router';
 import { ToastController, AlertController } from '@ionic/angular';
+import { PostProvider } from '../../provider/post-provider';
 
 @Component({
   selector: 'app-tab4',
@@ -9,11 +9,7 @@ import { ToastController, AlertController } from '@ionic/angular';
   styleUrls: ['./tab4.page.scss'],
 })
 export class Tab4Page implements OnInit {
-
-  daftars: any[] = [];
-  limit: number = 1;
-  start: number = 1;
-  id: string = '';
+  userData: any = null;
   showPassword: boolean = false;
 
   constructor(
@@ -24,56 +20,32 @@ export class Tab4Page implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadDaftar();
+    this.loadUserData();
+  }
+
+  ionViewWillEnter() {
+    this.loadUserData();
+  }
+
+  loadUserData() {
+    const userDataStr = sessionStorage.getItem('currentUser');
+    if (userDataStr) {
+      this.userData = JSON.parse(userDataStr);
+      console.log('Loaded user data:', this.userData); // Add this line
+    } else {
+      this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
+    }
   }
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 
-  ionViewWillEnter() {
-    this.daftars = [];
-    this.start = 0;
-    this.loadDaftar();
-  }
-
   doRefresh(event: any) {
     setTimeout(() => {
-      this.ionViewWillEnter();
+      this.loadUserData();
       event.target.complete();
     }, 500);
-  }
-
-  loadData(event: any) {
-    this.start += this.limit;
-    setTimeout(() => {
-      this.loadDaftar().then(() => {
-        event.target.complete();
-      });
-    }, 500);
-  }
-
-  loadDaftar() {
-    return new Promise(resolve => {
-      let body = {
-        aksi: 'getdata',
-        limit: this.limit,
-        start: this.start,
-      };
-
-      this.postPvdr.postData(body, 'action.php').subscribe({
-        next: (data: any) => {
-          if (data.success && data.result) {
-            this.daftars = [...this.daftars, ...data.result];
-            resolve(true);
-          }
-        },
-        error: (error) => {
-          console.error('Error fetching data', error);
-          resolve(false);
-        }
-      });
-    });
   }
 
   async confirmDelete() {
@@ -83,11 +55,7 @@ export class Tab4Page implements OnInit {
       buttons: [
         {
           text: 'Tidak',
-          role: 'cancel',
-          handler: () => {
-            // Navigasi ke halaman ganti password ketika user memilih 'Tidak'
-            this.router.navigateByUrl('/tabs/tab4');
-          }
+          role: 'cancel'
         },
         {
           text: 'Ya',
@@ -102,7 +70,7 @@ export class Tab4Page implements OnInit {
   }
 
   async deleteData() {
-    if (this.daftars.length === 0) {
+    if (!this.userData) {
       const toast = await this.toastController.create({
         message: 'Tidak ada akun untuk dihapus',
         duration: 2000
@@ -112,7 +80,7 @@ export class Tab4Page implements OnInit {
     }
 
     const body = {
-      id: this.daftars[0].id,
+      id: this.userData.id,
       aksi: 'deleteData'
     };
 
@@ -125,6 +93,8 @@ export class Tab4Page implements OnInit {
         toast.present();
 
         if (data.success) {
+          sessionStorage.clear();
+          localStorage.clear();
           this.router.navigateByUrl('/halamanutama');
         }
       },

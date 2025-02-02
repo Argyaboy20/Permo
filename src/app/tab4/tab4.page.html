@@ -18,37 +18,35 @@
   </ion-refresher>
 
   <div class="account-info">
-    <ion-list *ngIf="daftars.length > 0; else noData">
-      <ion-card *ngFor="let daftar of daftars">
-        <ion-card-header>
-          <ion-card-title>INFORMASI AKUN</ion-card-title>
-        </ion-card-header>
+    <ion-card *ngIf="userData; else noData">
+      <ion-card-header>
+        <ion-card-title>INFORMASI AKUN</ion-card-title>
+      </ion-card-header>
 
-        <ion-card-content>
-          <ion-item>
-            <ion-label position="stacked">Username</ion-label>
-            <ion-text>{{ daftar.username }}</ion-text>
-          </ion-item>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Username</ion-label>
+          <ion-text>{{ userData.username }}</ion-text>
+        </ion-item>
 
-          <ion-item>
-            <ion-label position="stacked">Email</ion-label>
-            <ion-text>{{ daftar.email }}</ion-text>
-          </ion-item>
-
-          <ion-item>
-            <ion-label position="stacked">Password</ion-label>
-            <ion-text>
-              <span *ngIf="!showPassword">********</span>
-              <span *ngIf="showPassword">{{ daftar.konfirmasi }}</span>
-            </ion-text>
-            <ion-button fill="clear" slot="end" (click)="togglePasswordVisibility()">
-              <ion-icon [name]="showPassword ? 'eye-off' : 'eye'" class="password-toggle">
-              </ion-icon>
-            </ion-button>
-          </ion-item>
-        </ion-card-content>
-      </ion-card>
-    </ion-list>
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <ion-text>{{ userData.email }}</ion-text>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Password</ion-label>
+          <ion-text>
+            <span *ngIf="!showPassword">********</span>
+            <span *ngIf="showPassword">{{ userData.konfirmasi }}</span>
+          </ion-text>
+          <ion-button fill="clear" slot="end" (click)="togglePasswordVisibility()">
+            <ion-icon [name]="showPassword ? 'eye-off' : 'eye'" class="password-toggle">
+            </ion-icon>
+          </ion-button>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
 
     <ng-template #noData>
       <ion-card>
@@ -59,16 +57,7 @@
     </ng-template>
   </div>
 
-  <ion-infinite-scroll (ionInfinite)="loadData($event)">
-    <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="........">
-    </ion-infinite-scroll-content>
-  </ion-infinite-scroll>
-
-
   <ion-button color="danger" shape="round" class="footer" (click)="confirmDelete()">
-    <a>
-      HAPUS AKUN
-    </a>
+    <a>HAPUS AKUN</a>
   </ion-button>
-
 </ion-content>
