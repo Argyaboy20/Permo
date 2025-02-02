@@ -33,9 +33,10 @@ export class IlmutanahPage implements OnInit {
 
   ngOnInit() {
   }
-
+  
+   /* Routing method */
   goToIsi(tanah: any){
-  this.router.navigate(['/detailtanah', tanah.id]); // Update routing method
+  this.router.navigate(['/detailtanah', tanah.id]);
 }
 
 }

@@ -15,7 +15,7 @@ export class Tab2Page implements OnInit {
     this.setGreeting();
     this.loadUserData();
   }
-
+  /* Memuat data pengguna dari sessionStorage */
   loadUserData() {
     const userData = sessionStorage.getItem('currentUser');
     if (userData) {
@@ -25,10 +25,10 @@ export class Tab2Page implements OnInit {
       this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
     }
   }
-
+  /* Mengatur tampilan greeting berdasarjan waktu */
   setGreeting() {
     const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) {
+    if (hour >= 4 && hour < 12) {
       this.greeting = 'Selamat pagi';
     } else if (hour >= 12 && hour < 16) {
       this.greeting = 'Selamat siang';
@@ -38,13 +38,13 @@ export class Tab2Page implements OnInit {
       this.greeting = 'Selamat malam';
     }
   }
-
+  /* Menangani proses logout */
   async logout() {
     sessionStorage.clear();
     localStorage.clear();
     await this.router.navigate(['/halamanutama'], { replaceUrl: true });
   }
-
+  /* Load data */
   ionViewWillEnter() {
     this.loadUserData();
   }

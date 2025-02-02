@@ -17,24 +17,24 @@ export class LupaakunPage implements OnInit {
   ) {}
 
   ngOnInit() {}
-
+   /* Validasi Email */
   async kirimInformasi() {
     if (!this.email) {
       this.presentToast('Harap isi email');
       return;
     }
-
+     /* Menampilkan loading spinner */
     const loading = await this.loadingController.create({
       message: 'Mengirim informasi...',
       spinner: 'circles'
     });
     await loading.present();
-
+     /* Menyiapkan data untuk API */
     const body = {
       email: this.email,
       aksi: 'lupa_akun'
     };
-
+     /* Mengirim request ke server */
     this.postPvdr.postData(body, 'action.php').subscribe({
       next: async (response: any) => {
         await loading.dismiss();

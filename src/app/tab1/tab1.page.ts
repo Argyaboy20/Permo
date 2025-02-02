@@ -23,10 +23,11 @@ export class Tab1Page implements OnInit {
   ) { }
 
   ngOnInit() {
-    // Clear all storage on init
+    /* Membersihkan storage */
     localStorage.clear();
     sessionStorage.clear();
 
+    /* Mengatur tombol ack */
     this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
       if (sessionStorage.getItem('currentUser')) {
         return;
@@ -36,30 +37,32 @@ export class Tab1Page implements OnInit {
     });
   }
 
+  /* Membersihkan subscription */
   ngOnDestroy() {
     if (this.backButtonSubscription) {
       this.backButtonSubscription.unsubscribe();
     }
   }
 
+  /* Validasi input */
   async login() {
     if (!this.username?.trim() || !this.konfirmasi?.trim()) {
       this.presentToast('Mohon isi username dan password');
       return;
     }
-
+    /* Menampilkan loading */
     const loading = await this.loadingController.create({
       message: 'Mohon tunggu...',
       spinner: 'circles'
     });
     await loading.present();
-
+    /* Proses login */
     const body = {
       username: this.username,
       konfirmasi: this.konfirmasi,
       aksi: 'login'
     };
-
+    /* Request ke server */
     this.postPvdr.postData(body, 'action.php').subscribe({
       next: async (data: any) => {
         await loading.dismiss();

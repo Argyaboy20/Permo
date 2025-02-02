@@ -31,7 +31,7 @@ export class Tab4Page implements OnInit {
     const userDataStr = sessionStorage.getItem('currentUser');
     if (userDataStr) {
       this.userData = JSON.parse(userDataStr);
-      console.log('Loaded user data:', this.userData); // Add this line
+      console.log('Loaded user data:', this.userData); 
     } else {
       this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
     }
@@ -47,7 +47,7 @@ export class Tab4Page implements OnInit {
       event.target.complete();
     }, 500);
   }
-
+  /* Method konfirmasi menghapus data */
   async confirmDelete() {
     const alert = await this.alertController.create({
       header: 'Konfirmasi',
@@ -68,7 +68,7 @@ export class Tab4Page implements OnInit {
 
     await alert.present();
   }
-
+  /* Method menghapus data */
   async deleteData() {
     if (!this.userData) {
       const toast = await this.toastController.create({
@@ -83,7 +83,7 @@ export class Tab4Page implements OnInit {
       id: this.userData.id,
       aksi: 'deleteData'
     };
-
+    /* Request ke server */
     this.postPvdr.postData(body, 'action.php').subscribe({
       next: async (data: any) => {
         const toast = await this.toastController.create({

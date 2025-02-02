@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { KamusService } from '../services/kamus.service'; // Adjust path as needed
+import { KamusService } from '../services/kamus.service';
 
 @Component({
   selector: 'app-detail',
@@ -12,14 +12,14 @@ export class DetailPage implements OnInit {
   tumbuhan: any = {
     title: '',
     description: '',
-    latinName: '', // Add this line to store Latin name separately
+    latinName: '', 
     suhu: '',
     tanah: '',
     sinarmatahari: '',
     air: ''
   };
 
-  // Latin names mapping (based on existing data in kamus.page.ts)
+  // Latin names mapping (berdasarkan data di kamus.page.ts)
   latinNames: { [key: string]: string } = {
     'ALPUKAT': 'Persea Americana',
     'BAWANG MERAH': 'Allium Ascalonicum',
@@ -45,6 +45,7 @@ export class DetailPage implements OnInit {
     private route: ActivatedRoute,
     private kamusService: KamusService
   ) { 
+     /* Mengambil dan menvalidasi parameter ID */
     const idParam = this.route.snapshot.paramMap.get('id');
     
     if (idParam !== null) {
@@ -62,7 +63,7 @@ export class DetailPage implements OnInit {
       console.error('No valid ID found');
     }
   }
-
+   /* Mengambil detail tumbuhan dari service */
   fetchTumbuhanDetails() {
     console.log('Fetching details for ID:', this.tumbuhanId);
     

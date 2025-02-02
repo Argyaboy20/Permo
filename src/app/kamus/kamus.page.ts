@@ -37,6 +37,7 @@ export class KamusPage implements OnInit {
   ngOnInit() {
   }
 
+   /* Routing Method */ 
   goToDetail(tumbuhan: any){
     this.router.navigate(['/detail', tumbuhan.id]); 
   }

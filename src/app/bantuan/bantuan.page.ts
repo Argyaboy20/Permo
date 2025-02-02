@@ -15,6 +15,7 @@ export class BantuanPage implements OnInit {
   isSubmitting = false;
   validationErrors: { [key: string]: string } = {};
 
+   /* Inisialisasi Form */
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
@@ -29,7 +30,7 @@ export class BantuanPage implements OnInit {
   }
 
   ngOnInit() {
-    // Add value change listeners for username and email
+     /* Menambahkan listener untuk perubahan nilai username dan email */
     this.bantuanForm.get('username')?.valueChanges.subscribe(() => {
       if (this.validationErrors['username']) {
         this.validateField('username');
@@ -42,7 +43,7 @@ export class BantuanPage implements OnInit {
       }
     });
   }
-
+   /* Validasi input field dan pengecekan ke server */
   async validateField(fieldName: string) {
     const field = this.bantuanForm.get(fieldName);
     if (!field || !field.value || field.invalid) {
@@ -50,12 +51,12 @@ export class BantuanPage implements OnInit {
         'Email tidak valid atau tidak diisi' : 'Username tidak diisi';
       return false;
     }
-
+      /*/ validasi lokal */
     const formData = {
       aksi: 'validate_user',
       [fieldName]: field.value
     };
-
+      /* validasi dengan server */
     try {
       const response: any = await this.http.post(this.apiUrl, formData).toPromise();
       if (!response.success) {
@@ -69,24 +70,24 @@ export class BantuanPage implements OnInit {
       return false;
     }
   }
-
+   /* Mengecek status validasi field */
   isFieldInvalid(fieldName: string): boolean {
     const field = this.bantuanForm.get(fieldName);
     return (field!.invalid && (field!.dirty || field!.touched)) || !!this.validationErrors[fieldName];
   }
-
+   /* Mendapatkan pesan error untuk field */
   getErrorMessage(fieldName: string): string {
     return this.validationErrors[fieldName] || 
            (fieldName === 'email' ? 'Email tidak valid atau tidak diisi' : 'Username tidak diisi');
   }
-
+   /* Validasi form sebelum submit */
   async submitForm() {
     if (this.bantuanForm.invalid || this.isSubmitting) {
       this.showAlert('Error', 'Mohon lengkapi semua data dengan benar');
       return;
     }
 
-    // Validate both fields before submitting
+     /* Validate both fields before submitting */
     const isUsernameValid = await this.validateField('username');
     const isEmailValid = await this.validateField('email');
 
@@ -97,13 +98,14 @@ export class BantuanPage implements OnInit {
 
     this.isSubmitting = true;
 
+    /* Proses pengiriman data ke server*/
     const formData = {
       aksi: 'add_bantuan',
       username: this.bantuanForm.get('username')?.value,
       email: this.bantuanForm.get('email')?.value,
       kendala: this.bantuanForm.get('kendala')?.value
     };
-
+      /* proses HTTP request */
     this.http.post(this.apiUrl, formData).subscribe({
       next: (response: any) => {
         this.isSubmitting = false;
@@ -121,7 +123,7 @@ export class BantuanPage implements OnInit {
       }
     });
   }
-
+    /* Menampilkan alert umum */
   private async showAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header,
@@ -130,7 +132,7 @@ export class BantuanPage implements OnInit {
     });
     await alert.present();
   }
-
+  /* Menampilkan alert sukses dengan navigasi */
   private async showSuccessAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header,

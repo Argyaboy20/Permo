@@ -53,7 +53,7 @@ export class DetailtanahPage implements OnInit {
       console.error('ID parameter is null');
     }
   }
-
+   /* Mengambil detail tanah dari service */
   private loadTanahDetail() {
     console.log('Fetching details for ID:', this.tanahId);
     

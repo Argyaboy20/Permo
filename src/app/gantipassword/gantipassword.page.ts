@@ -29,6 +29,7 @@ export class GantipasswordPage {
     this.showNewPassword = !this.showNewPassword;
   }
 
+   /* Validasi input */
   async changePassword() {
     if (this.isLoading) return;
 
@@ -48,7 +49,7 @@ export class GantipasswordPage {
     }
 
     this.isLoading = true;
-
+     /* Proses pengiriman data */
     const data = {
       aksi: 'change_password',
       old_password: this.oldPassword,
@@ -76,7 +77,7 @@ export class GantipasswordPage {
       this.isLoading = false;
     }
   }
-
+   /* Peringatan Method Pembantu */
   async showAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header,

@@ -27,7 +27,7 @@ export class DaftarPage implements OnInit {
   ) {
 
   }
-
+   /* Inisialisasi Form */
   ngOnInit() {
     this.createForm();
   }
