@@ -12,6 +12,7 @@
         </ion-fab-button>
       </ion-fab>
 
+      <!-- Searchbar -->
       <ion-searchbar class="search"
         [(ngModel)]="searchIsi"  
         placeholder="Mau cari apa nih?" 
@@ -22,6 +23,7 @@
   </ion-toolbar>
 </ion-header>
 
+<!-- Isi Menu -->
 <ion-content [fullscreen]="true">
   <ion-list class="tn">
     <ion-item *ngFor="let tan of tanah | filter: searchIsi" (click)="goToIsi(tan)">

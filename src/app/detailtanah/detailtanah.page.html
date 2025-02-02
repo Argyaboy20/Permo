@@ -11,6 +11,7 @@
 
 <ion-content>
   <div class="content-container">
+    <!-- Judul -->
     <h3 class="h3">{{tanah.title}}</h3>
     <p class="p">Nama Latin: {{tanah.latinName}}</p>
 
@@ -20,21 +21,25 @@
       </ion-card-header>
       <ion-card-content>
         <div class="detail-list">
+          <!-- Kolom Karakteristik -->
           <div class="detail-item">
             <div class="label">Karakteristik</div>
             <div class="value">{{tanahDetail.karakteristik}}</div>
           </div>
           
+          <!-- Kolom Tumbuhan yang cocok -->
           <div class="detail-item">
             <div class="label">Tumbuhan yang Cocok</div>
             <div class="value">{{tanahDetail.tumbuhan}}</div>
           </div>
           
+          <!-- Kolom Penyebaran -->
           <div class="detail-item">
             <div class="label">Penyebaran</div>
             <div class="value">{{tanahDetail.penyebaran}}</div>
           </div>
           
+          <!-- Kolom UnsurpH -->
           <div class="detail-item">
             <div class="label">Unsur pH</div>
             <div class="value">{{tanahDetail.unsurph}}</div>

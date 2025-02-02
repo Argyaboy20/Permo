@@ -37,6 +37,7 @@
         <ion-card-title>Informasi Cuaca</ion-card-title>
         <ion-card-subtitle>
           {{ locationName || 'Memuat lokasi...' }}
+          <!-- Real Clock -->
           <div class="time-display">
             <ion-icon name="time-outline"></ion-icon>
             {{ currentTime }}
@@ -83,6 +84,7 @@
       </ion-card-content>
     </ion-card>
 
+    <!-- Jika tidak ada yang ideal -->
     <ion-card *ngIf="suitableCrops.length === 0">
       <ion-card-header>
         <ion-card-title>Tidak Ada Rekomendasi</ion-card-title>

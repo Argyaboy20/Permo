@@ -12,6 +12,7 @@
 
 <ion-content>
   <div class="content-container">
+    <!-- Judul -->
     <h3 class="h3">{{tumbuhan.title}}</h3>
     <p class="p">Nama Latin: {{tumbuhan.latinName}}</p>
 
@@ -21,21 +22,25 @@
       </ion-card-header>
       <ion-card-content>
         <div class="detail-list">
+          <!-- Kolom Suhu -->
           <div class="detail-item">
             <div class="label">Suhu</div>
             <div class="value">{{tumbuhan.suhu}}</div>
           </div>
           
+          <!-- Kolom Jenis Tanah -->
           <div class="detail-item">
             <div class="label">Jenis Tanah</div>
             <div class="value">{{tumbuhan.tanah}}</div>
           </div>
           
+          <!-- Kolom Sinar Matahari -->
           <div class="detail-item">
             <div class="label">Kebutuhan Sinar Matahari</div>
             <div class="value">{{tumbuhan.sinarmatahari}}</div>
           </div>
           
+          <!-- Kolom Kebutuhan Air -->
           <div class="detail-item">
             <div class="label">Kebutuhan Air</div>
             <div class="value">{{tumbuhan.air}}</div>

@@ -7,6 +7,7 @@
             <h1>Pendaftaran Akun Baru</h1>
         </div>
 
+        <!-- Kolom Username -->
         <form [formGroup]="registerForm.getForm()" (ngSubmit)="addRegister()">
             <div class="form-group">
                 <ion-textarea 
@@ -28,6 +29,7 @@
                 </div>
             </div>
 
+            <!-- Kolom Email -->
             <div class="form-group">
                 <ion-textarea 
                     [(ngModel)]="email" 
@@ -51,6 +53,7 @@
                 </div>
             </div>
 
+            <!-- Kolom Password -->
             <div class="form-group">
                 <ion-textarea 
                     [(ngModel)]="pss" 
@@ -74,6 +77,7 @@
                 </div>
             </div>
 
+            <!-- Kolom Konfirmasi Password -->
             <div class="form-group">
                 <ion-textarea 
                     [(ngModel)]="konfirmasi" 
@@ -94,6 +98,7 @@
                 </div>
             </div>
 
+            <!-- Tombol Daftar -->
             <ion-button type="submit" class="btn" [disabled]="!registerForm.getForm().valid">
                 DAFTAR
             </ion-button>

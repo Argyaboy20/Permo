@@ -6,6 +6,7 @@
         </div>
 
         <form>
+            <!-- Kolom Email -->
             <div class="form-group">
                 <ion-textarea [(ngModel)]="email" name="email" fill="solid" label="Email" labelPlacement="floating"
                     fill="outline" helperText="Masukkan email yang valid" errorText="Email tidak valid"
@@ -13,11 +14,13 @@
                 </ion-textarea>
             </div>
 
+            <!-- Tombol -->
             <ion-button type="submit" class="btn" (click)="kirimInformasi()">
                 KIRIM INFORMASI AKUN
             </ion-button>
         </form>
 
+        <!-- Hyperlink -->
         <div class="footer">
             <p>Sudah punya akun? <a href="/tabs/tab1">Masuk ke Akun</a></p>
         </div>

@@ -5,6 +5,7 @@
       <p>Silakan sampaikan keluhan atau pertanyaan di bawah</p>
     </div>
 
+    <!-- Kolom Username -->
     <form [formGroup]="bantuanForm" (ngSubmit)="submitForm()">
       <div class="form-group">
         <ion-textarea 
@@ -20,6 +21,7 @@
         </div>
       </div>
 
+      <!-- Kolom Email -->
       <div class="form-group">
         <ion-textarea 
           label="Email" 
@@ -34,6 +36,7 @@
         </div>
       </div>
 
+      <!-- Kolom Kendala -->
       <div class="form-group kendala-group">
         <ion-item class="kendala-item">
           <ion-textarea 
@@ -49,6 +52,7 @@
         </ion-item>
       </div>
 
+      <!-- Tombol Kirim -->
       <div class="button-container">
         <ion-button type="submit" expand="block" class="btn" [disabled]="bantuanForm.invalid">
           KIRIM KENDALA
