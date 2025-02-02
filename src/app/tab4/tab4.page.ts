@@ -20,21 +20,59 @@ export class Tab4Page implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadUserData();
+    this.loadUserDataFromServer();
   }
 
   ionViewWillEnter() {
-    this.loadUserData();
+    this.loadUserDataFromServer();
   }
 
-  loadUserData() {
+  // Method baru untuk mengambil data user dari server
+  async loadUserDataFromServer() {
     const userDataStr = sessionStorage.getItem('currentUser');
     if (userDataStr) {
-      this.userData = JSON.parse(userDataStr);
-      console.log('Loaded user data:', this.userData); 
+      const userData = JSON.parse(userDataStr);
+      
+      // Membuat body request untuk mengambil data terbaru
+      const body = {
+        id: userData.id,
+        aksi: 'getLatestUserData'
+      };
+
+      try {
+        // Request ke server untuk mendapatkan data terbaru
+        this.postPvdr.postData(body, 'action.php').subscribe({
+          next: (response: any) => {
+            if (response.success) {
+              // Update data di sessionStorage dengan data terbaru
+              const updatedUserData = response.result[0]; // Sesuaikan dengan struktur response dari server
+              sessionStorage.setItem('currentUser', JSON.stringify(updatedUserData));
+              this.userData = updatedUserData;
+            } else {
+              this.showToast('Gagal memperbarui data');
+            }
+          },
+          error: (error) => {
+            console.error('Error fetching user data:', error);
+            this.showToast('Terjadi kesalahan saat mengambil data');
+          }
+        });
+      } catch (error) {
+        console.error('Error in loadUserDataFromServer:', error);
+        this.showToast('Terjadi kesalahan sistem');
+      }
     } else {
       this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
     }
+  }
+
+  // Method untuk menampilkan toast
+  async showToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000
+    });
+    toast.present();
   }
 
   togglePasswordVisibility() {
@@ -42,11 +80,11 @@ export class Tab4Page implements OnInit {
   }
 
   doRefresh(event: any) {
-    setTimeout(() => {
-      this.loadUserData();
+    this.loadUserDataFromServer().then(() => {
       event.target.complete();
-    }, 500);
+    });
   }
+  
   /* Method konfirmasi menghapus data */
   async confirmDelete() {
     const alert = await this.alertController.create({

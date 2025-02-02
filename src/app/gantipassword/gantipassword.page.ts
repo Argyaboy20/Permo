@@ -14,12 +14,21 @@ export class GantipasswordPage {
   showOldPassword: boolean = false;
   showNewPassword: boolean = false;
   isLoading: boolean = false;
+  userData: any;
 
   constructor(
     private http: HttpClient,
     private alertController: AlertController,
     private router: Router
-  ) {}
+  ) {
+    // Load user data saat komponen diinisialisasi
+    const userDataStr = sessionStorage.getItem('currentUser');
+    if (userDataStr) {
+      this.userData = JSON.parse(userDataStr);
+    } else {
+      this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
+    }
+  }
 
   toggleOldPasswordVisibility() {
     this.showOldPassword = !this.showOldPassword;
@@ -29,10 +38,10 @@ export class GantipasswordPage {
     this.showNewPassword = !this.showNewPassword;
   }
 
-   /* Validasi input */
   async changePassword() {
     if (this.isLoading) return;
 
+    // Validasi dasar
     if (!this.oldPassword || !this.newPassword) {
       await this.showAlert('Peringatan', 'Mohon isi semua field');
       return;
@@ -48,12 +57,20 @@ export class GantipasswordPage {
       return;
     }
 
+    // Pastikan userData ada
+    if (!this.userData || !this.userData.id) {
+      await this.showAlert('Error', 'Data pengguna tidak ditemukan');
+      this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
+      return;
+    }
+
     this.isLoading = true;
-     /* Proses pengiriman data */
+
     const data = {
       aksi: 'change_password',
       old_password: this.oldPassword,
-      new_password: this.newPassword
+      new_password: this.newPassword,
+      user_id: this.userData.id // Menambahkan user_id ke request
     };
 
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
@@ -63,6 +80,11 @@ export class GantipasswordPage {
       const response = await this.http.post<any>(apiUrl, data, { headers }).toPromise();
 
       if (response && response.success) {
+        // Update session storage dengan data user yang baru
+        if (response.user) {
+          sessionStorage.setItem('currentUser', JSON.stringify(response.user));
+        }
+        
         await this.showAlert('Sukses', 'Password berhasil diubah');
         this.oldPassword = '';
         this.newPassword = '';
@@ -77,7 +99,7 @@ export class GantipasswordPage {
       this.isLoading = false;
     }
   }
-   /* Peringatan Method Pembantu */
+
   async showAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header,

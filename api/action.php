@@ -105,49 +105,49 @@ switch ($aksi) {
         }
         break;
 
-        case "login":
-            try {
-                if (!isset($postjson['username']) || !isset($postjson['konfirmasi'])) {
-                    throw new Exception('Username and password are required');
-                }
-        
-                $username = trim($postjson['username']);
-                $konfirmasi = trim($postjson['konfirmasi']);
-        
-                error_log("Login attempt - username: " . $username);
-        
-                $sql = "SELECT * FROM daftar WHERE username = :username AND konfirmasi = :konfirmasi";
-                $stmt = $pdo->prepare($sql);
-                $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-                $stmt->bindParam(':konfirmasi', $konfirmasi, PDO::PARAM_STR);
-                $stmt->execute();
-        
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-                error_log("Query result: " . json_encode($user));
-        
-                if ($user) {
-                    echo json_encode([
-                        'success' => true,
-                        'id' => $user['id'],
-                        'username' => $user['username'],
-                        'email' => $user['email'],  // Add this line
-                        'konfirmasi' => $user['konfirmasi']
-                    ]);
-                } else {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => 'Username atau password salah'
-                    ]);
-                }
-            } catch (PDOException $e) {
-                error_log("Database error: " . $e->getMessage());
+    case "login":
+        try {
+            if (!isset($postjson['username']) || !isset($postjson['konfirmasi'])) {
+                throw new Exception('Username and password are required');
+            }
+
+            $username = trim($postjson['username']);
+            $konfirmasi = trim($postjson['konfirmasi']);
+
+            error_log("Login attempt - username: " . $username);
+
+            $sql = "SELECT * FROM daftar WHERE username = :username AND konfirmasi = :konfirmasi";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':konfirmasi', $konfirmasi, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            error_log("Query result: " . json_encode($user));
+
+            if ($user) {
+                echo json_encode([
+                    'success' => true,
+                    'id' => $user['id'],
+                    'username' => $user['username'],
+                    'email' => $user['email'],  // Add this line
+                    'konfirmasi' => $user['konfirmasi']
+                ]);
+            } else {
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Error: ' . $e->getMessage()
+                    'message' => 'Username atau password salah'
                 ]);
             }
-            break;
+        } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ]);
+        }
+        break;
 
     case "lupa_akun":
         $email = filter_var($postjson['email'], FILTER_SANITIZE_EMAIL);
@@ -212,10 +212,53 @@ switch ($aksi) {
         }
         break;
 
+    case "getLatestUserData":
+        try {
+            if (!isset($postjson['id'])) {
+                throw new Exception('ID pengguna diperlukan');
+            }
+
+            $id = filter_var($postjson['id'], FILTER_SANITIZE_NUMBER_INT);
+
+            $sql = "SELECT id, username, email, konfirmasi FROM daftar WHERE id = :id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                echo json_encode([
+                    'success' => true,
+                    'result' => array(
+                        [
+                            'id' => $user['id'],
+                            'username' => $user['username'],
+                            'email' => $user['email'],
+                            'konfirmasi' => $user['konfirmasi']
+                        ]
+                    )
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Pengguna tidak ditemukan'
+                ]);
+            }
+        } catch (Exception $e) {
+            error_log("Error in getLatestUserData: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+        break;
+
     case "change_password":
         try {
             $old_password = trim($postjson['old_password']);
             $new_password = trim($postjson['new_password']);
+            $user_id = isset($postjson['user_id']) ? trim($postjson['user_id']) : null;
 
             if (empty($old_password) || empty($new_password)) {
                 echo json_encode([
@@ -226,9 +269,9 @@ switch ($aksi) {
             }
 
             // Verifikasi password lama
-            $check_sql = "SELECT id FROM daftar WHERE konfirmasi = ?";
+            $check_sql = "SELECT id FROM daftar WHERE konfirmasi = ? AND id = ?";
             $check_stmt = $pdo->prepare($check_sql);
-            $check_stmt->execute([$old_password]);
+            $check_stmt->execute([$old_password, $user_id]);
 
             if ($check_stmt->rowCount() === 0) {
                 echo json_encode([
@@ -239,14 +282,21 @@ switch ($aksi) {
             }
 
             // Update password
-            $update_sql = "UPDATE daftar SET konfirmasi = ? WHERE konfirmasi = ?";
+            $update_sql = "UPDATE daftar SET konfirmasi = ?, pss = ? WHERE id = ? AND konfirmasi = ?";
             $update_stmt = $pdo->prepare($update_sql);
-            $success = $update_stmt->execute([$new_password, $old_password]);
+            $success = $update_stmt->execute([$new_password, $new_password, $user_id, $old_password]);
 
             if ($success) {
+                // Ambil data user terbaru setelah update
+                $fetch_sql = "SELECT id, username, email, konfirmasi FROM daftar WHERE id = ?";
+                $fetch_stmt = $pdo->prepare($fetch_sql);
+                $fetch_stmt->execute([$user_id]);
+                $updated_user = $fetch_stmt->fetch(PDO::FETCH_ASSOC);
+
                 echo json_encode([
                     'success' => true,
-                    'message' => 'Password berhasil diubah'
+                    'message' => 'Password berhasil diubah',
+                    'user' => $updated_user
                 ]);
             } else {
                 echo json_encode([
