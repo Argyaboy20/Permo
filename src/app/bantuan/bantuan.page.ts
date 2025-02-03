@@ -92,7 +92,7 @@ export class BantuanPage implements OnInit {
     const isEmailValid = await this.validateField('email');
 
     if (!isUsernameValid || !isEmailValid) {
-      this.showAlert('Error', 'Data yang dimasukkan tidak valid');
+      this.showAlert('Peringatan', 'Harap dicek kembali data yang diperlukan');
       return;
     }
 
