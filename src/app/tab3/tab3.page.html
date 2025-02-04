@@ -4,7 +4,7 @@
     <ion-title class="pred">
       PREDIKSI CUACA
     </ion-title>
-    
+
     <ion-fab>
       <ion-fab-button href="/tabs/tab2">
         <ion-icon name="arrow-back-outline"></ion-icon>
@@ -103,9 +103,10 @@
                 </ion-item>
               </ion-list>
             </ion-card-content>
+          </ion-card>
           
           <!-- No recommendations message -->
-          <ion-card *ngIf="suitableCrops.length === 0">
+          <ion-card *ngIf="!isLoading && !errorMessage && suitableCrops.length === 0">
             <ion-card-header>
               <ion-card-title>Tidak Ada Rekomendasi</ion-card-title>
             </ion-card-header>
@@ -117,3 +118,5 @@
               </ul>
             </ion-card-content>
           </ion-card>
+        </ion-col>
+      </ion-row>
