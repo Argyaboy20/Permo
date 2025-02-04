@@ -459,4 +459,70 @@ switch ($aksi) {
             ]);
         }
         break;
+
+    case "get_crop_recommendations":
+        try {
+            if (!isset($postjson['temperature']) || !isset($postjson['humidity'])) {
+                throw new Exception('Temperature and humidity are required');
+            }
+
+            $temperature = filter_var($postjson['temperature'], FILTER_VALIDATE_FLOAT);
+            $humidity = filter_var($postjson['humidity'], FILTER_VALIDATE_FLOAT);
+
+            if ($temperature === false || $humidity === false) {
+                throw new Exception('Invalid temperature or humidity values');
+            }
+
+            // Query disesuaikan dengan nama kolom di database
+            $sql = "SELECT * FROM rekomendasi 
+                        WHERE :temp BETWEEN `suhu minimal` AND `suhu maksimal` 
+                        AND :hum BETWEEN `udara minimal` AND `udara maksimal`
+                        ORDER BY ABS(:temp2 - (`suhu minimal` + `suhu maksimal`)/2) + 
+                                 ABS(:hum2 - (`udara minimal` + `udara maksimal`)/2)
+                        LIMIT 10";
+
+            $stmt = $pdo->prepare($sql);
+
+            // Binding semua parameter yang digunakan
+            $stmt->bindValue(':temp', $temperature, PDO::PARAM_STR);
+            $stmt->bindValue(':hum', $humidity, PDO::PARAM_STR);
+            $stmt->bindValue(':temp2', $temperature, PDO::PARAM_STR);
+            $stmt->bindValue(':hum2', $humidity, PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if ($results) {
+                echo json_encode([
+                    'success' => true,
+                    'result' => array_map(function ($row) {
+                        return [
+                            'id' => $row['id'],
+                            'datatumbuhan' => $row['datatumbuhan'],
+                            'suhu_min' => $row['suhu minimal'],
+                            'suhu_max' => $row['suhu maksimal'],
+                            'udara_min' => $row['udara minimal'],
+                            'udara_max' => $row['udara maksimal'],
+                            'lembabtanah' => $row['lembabtanah']
+                        ];
+                    }, $results)
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => true,
+                    'result' => [],
+                    'message' => 'Tidak ada rekomendasi yang sesuai dengan kondisi cuaca saat ini'
+                ]);
+            }
+
+        } catch (Exception $e) {
+            error_log("Error in get_crop_recommendations: " . $e->getMessage());
+            http_response_code(500);
+            echo json_encode([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+        break;
 }
