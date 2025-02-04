@@ -6,100 +6,38 @@ import { environment } from '../../environments/environment';
 import { catchError, timeout } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 
+interface CropRecommendation {
+  id: number;
+  datatumbuhan: string;
+  suhu: string;
+  suhu_min: number;
+  suhu_max: number;
+  udara: string;
+  udara_min: number;
+  udara_max: number;
+  lembabtanah: string;
+}
+
+
 @Component({
   selector: 'app-tab3',
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
+
 export class Tab3Page implements OnInit, OnDestroy {
   temperature: number | null = null;
   humidity: number | null = null;
   soilMoisture: number | null = null;
   locationName: string = '';
-  suitableCrops: any[] = [];
+  suitableCrops: CropRecommendation[] = [];
   errorMessage: string = '';
   isLocationEnabled: boolean = false;
   isLoading: boolean = false;
   currentTime: string = '';
   private timeInterval: any;
 
-  //isi rekomendasi tanaman
-  private crops = [
-    { 
-      name: 'Sawit', 
-      idealTemp: '24-28°C', 
-      minTemp: 24, 
-      maxTemp: 28,
-      minHumidity: 80,
-      maxHumidity: 90 
-    },
-    { 
-      name: 'Padi', 
-      idealTemp: '22-38°C', 
-      minTemp: 22, 
-      maxTemp: 28,
-      minHumidity: 76,
-      maxHumidity: 86 
-    },
-    { 
-      name: 'Kedelai', 
-      idealTemp: '20-30°C', 
-      minTemp: 20, 
-      maxTemp: 30,
-      minHumidity: 75,
-      maxHumidity: 90 
-    },
-    { 
-      name: 'Jambu Biji', 
-      idealTemp: '23-28°C', 
-      minTemp: 23, 
-      maxTemp: 28,
-      minHumidity: 30,
-      maxHumidity: 50 
-    },
-    { 
-      name: 'Selada', 
-      idealTemp: '18-22°C', 
-      minTemp: 18, 
-      maxTemp: 22,
-      minHumidity: 80,
-      maxHumidity: 90 
-    },
-    { 
-      name: 'Jagung', 
-      idealTemp: '21-34°C', 
-      minTemp: 21, 
-      maxTemp: 34,
-      minHumidity: 80,
-      maxHumidity: 80 
-    },
-    { 
-      name: 'Mangga', 
-      idealTemp: '21-29°C', 
-      minTemp: 21, 
-      maxTemp: 29,
-      minHumidity: 85,
-      maxHumidity: 90 
-    },
-    { 
-      name: 'Jeruk', 
-      idealTemp: '20-38°C', 
-      minTemp: 20, 
-      maxTemp: 38,
-      minHumidity: 70,
-      maxHumidity: 80 
-    },
-    { 
-      name: 'Salak', 
-      idealTemp: '20-30°C', 
-      minTemp: 20, 
-      maxTemp: 30,
-      minHumidity: 40,
-      maxHumidity: 70 
-    }
-  ];
-
-  //API WEATHER
+  private readonly BASE_API_URL = environment.baseApiUrl;
   private readonly WEATHER_API_URL = 'https://api.weatherapi.com/v1/current.json';
   private readonly WEATHER_API_KEY = environment.weatherApiKey;
   private readonly API_TIMEOUT = 15000;
@@ -109,7 +47,7 @@ export class Tab3Page implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private alertController: AlertController,
     private platform: Platform
-  ) {}
+  ) { }
 
   async ngOnInit() {
     await this.platform.ready();
@@ -145,7 +83,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   private async initializeLocation() {
     try {
       const status = await Geolocation.checkPermissions();
-      
+
       if (status.location === 'granted') {
         this.isLocationEnabled = true;
         await this.getCurrentLocation();
@@ -162,7 +100,7 @@ export class Tab3Page implements OnInit, OnDestroy {
     try {
       const permission = await Geolocation.requestPermissions();
       this.isLocationEnabled = permission.location === 'granted';
-      
+
       if (this.isLocationEnabled) {
         await this.getCurrentLocation();
       } else {
@@ -259,7 +197,7 @@ export class Tab3Page implements OnInit, OnDestroy {
 
   private handleApiError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'Terjadi kesalahan saat mengambil data cuaca';
-    
+
     if (error instanceof HttpErrorResponse) {
       switch (error.status) {
         case 401:
@@ -285,17 +223,83 @@ export class Tab3Page implements OnInit, OnDestroy {
   }
 
   private updateCropRecommendations() {
-    if (this.temperature === null || this.humidity === null) return;
-    
-    this.suitableCrops = this.crops.filter(crop => 
-      this.temperature! >= crop.minTemp && 
-      this.temperature! <= crop.maxTemp &&
-      this.humidity! >= crop.minHumidity &&
-      this.humidity! <= crop.maxHumidity &&
-      this.soilMoisture! >= 50 && 
-      this.soilMoisture! <= 70
-    );
-  }
+    if (this.temperature === null || this.humidity === null) {
+        console.error('Weather data is incomplete');
+        return;
+    }
+
+    const requestData = {
+        aksi: 'get_crop_recommendations',
+        temperature: this.temperature.toString(),
+        humidity: this.humidity.toString()
+    };
+
+    console.log('Sending request:', {
+        url: `${this.BASE_API_URL}/action.php`,
+        data: requestData
+    });
+
+    this.http.post<any>(`${this.BASE_API_URL}/action.php`, JSON.stringify(requestData), {
+        headers: new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        })
+    }).pipe(
+        timeout(10000),
+        catchError((error: HttpErrorResponse) => {
+            console.error('API Error:', error);
+            let errorMessage = 'Terjadi kesalahan saat mengambil rekomendasi';
+
+            if (error.error instanceof ErrorEvent) {
+                errorMessage = `Error: ${error.error.message}`;
+            } else if (error.error && typeof error.error === 'object' && 'message' in error.error) {
+                errorMessage = error.error.message;
+            } else {
+                switch (error.status) {
+                    case 0:
+                        errorMessage = 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
+                        break;
+                    case 404:
+                        errorMessage = 'API endpoint tidak ditemukan.';
+                        break;
+                    case 500:
+                        errorMessage = 'Terjadi kesalahan pada server.';
+                        break;
+                    default:
+                        errorMessage = `Kesalahan: ${error.message}`;
+                }
+            }
+            return throwError(() => new Error(errorMessage));
+        })
+    ).subscribe({
+        next: (response) => {
+            console.log('API Response:', response);
+
+            if (response.success && Array.isArray(response.result)) {
+                this.suitableCrops = response.result.map((crop: any) => ({
+                    id: crop.id,
+                    datatumbuhan: crop.datatumbuhan,
+                    suhu: `${crop.suhu_min}-${crop.suhu_max}°C`,
+                    udara: `${crop.udara_min}-${crop.udara_max}%`,
+                    lembabtanah: crop.lembabtanah,
+                    suhu_min: parseFloat(crop.suhu_min),
+                    suhu_max: parseFloat(crop.suhu_max),
+                    udara_min: parseFloat(crop.udara_min),
+                    udara_max: parseFloat(crop.udara_max)
+                }));
+
+                console.log('Processed crops:', this.suitableCrops);
+            } else {
+                this.suitableCrops = [];
+                console.warn('No recommendations found:', response.message);
+            }
+        },
+        error: (error: Error) => {
+            this.handleError(error.message);
+            this.suitableCrops = [];
+        }
+    });
+}
 
   private async showLocationPermissionAlert() {
     const alert = await this.alertController.create({

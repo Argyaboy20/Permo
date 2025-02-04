@@ -75,32 +75,45 @@
           <ion-card *ngIf="suitableCrops.length > 0">
             <ion-card-header>
               <ion-card-title>Rekomendasi Tanaman</ion-card-title>
+              <ion-card-subtitle>
+                Berdasarkan kondisi cuaca saat ini:
+                Suhu: {{temperature}}°C, Kelembaban: {{humidity}}%
+              </ion-card-subtitle>
             </ion-card-header>
-
+          
             <ion-card-content>
               <ion-list>
                 <ion-item *ngFor="let crop of suitableCrops">
-                  <ion-icon name="checkmark-circle-outline" slot="start" color="success"></ion-icon>
+                  <ion-icon name="leaf-outline" slot="start" color="success"></ion-icon>
                   <ion-label>
-                    <h2>{{ crop.name }}</h2>
-                    <p>Suhu ideal: {{ crop.idealTemp }}</p>
+                    <h2>{{ crop.datatumbuhan }}</h2>
+                    <p>
+                      <ion-icon name="thermometer-outline" class="small-icon"></ion-icon>
+                      Suhu ideal: {{ crop.suhu }}
+                    </p>
+                    <p>
+                      <ion-icon name="water-outline" class="small-icon"></ion-icon>
+                      Kelembaban udara ideal: {{ crop.udara }}
+                    </p>
+                    <p>
+                      <ion-icon name="flower-outline" class="small-icon"></ion-icon>
+                      Kelembaban tanah ideal: {{ crop.lembabtanah }}%
+                    </p>
                   </ion-label>
                 </ion-item>
               </ion-list>
             </ion-card-content>
-          </ion-card>
-
-          <!-- Jika tidak ada yang ideal -->
+          
+          <!-- No recommendations message -->
           <ion-card *ngIf="suitableCrops.length === 0">
             <ion-card-header>
               <ion-card-title>Tidak Ada Rekomendasi</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-              Suhu atau kelembaban saat ini tidak ideal untuk tanaman yang terdaftar.
+              <p>Tidak ditemukan tanaman yang cocok dengan kondisi cuaca saat ini:</p>
+              <ul>
+                <li>Suhu: {{temperature}}°C</li>
+                <li>Kelembaban Udara: {{humidity}}%</li>
+              </ul>
             </ion-card-content>
           </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </div>
-</ion-content>
