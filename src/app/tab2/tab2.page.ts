@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
+import { AlertController, Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   templateUrl: 'tab2.page.html',
@@ -8,15 +11,89 @@ import { Router, NavigationExtras } from '@angular/router';
 export class Tab2Page implements OnInit {
   public greeting: string = '';
   public username: string = '';
+  private subscription: Subscription = new Subscription();
+  private backButtonSubscription: Subscription = new Subscription();
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private alertController: AlertController,
+    private platform: Platform
+  ) {
+    this.preventNavigationAfterLogout();
+  }
 
   ngOnInit() {
     this.setGreeting();
     this.loadUserData();
+    this.handleHardwareBackButton();
   }
-  /* Memuat data pengguna dari sessionStorage */
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+    this.backButtonSubscription.unsubscribe();
+  }
+
+  private preventNavigationAfterLogout() {
+    this.subscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => {
+        if (localStorage.getItem('isLoggedOut') === 'true' && 
+            window.location.pathname !== '/halamanutama') {
+          window.location.href = '/halamanutama';
+        }
+      });
+  }
+
+  private handleHardwareBackButton() {
+    this.backButtonSubscription = this.platform.backButton
+      .subscribeWithPriority(9999, () => {
+        if (localStorage.getItem('isLoggedOut') === 'true') {
+          window.location.href = '/halamanutama';
+        }
+      });
+  }
+
+   /* Menangani proses logout */
+  async logout() {
+    const alert = await this.alertController.create({
+      header: 'Konfirmasi Keluar',
+      message: 'Apakah Anda yakin ingin keluar?',
+      buttons: [
+        {
+          text: 'Tidak',
+          role: 'cancel'
+        },
+        {
+          text: 'Ya',
+          handler: () => {
+            this.performLogout();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  private performLogout() {
+    sessionStorage.clear();
+    localStorage.clear();
+    localStorage.setItem('isLoggedOut', 'true');
+    
+    window.history.pushState(null, '', '/halamanutama');
+    window.onpopstate = function() {
+      window.history.pushState(null, '', '/halamanutama');
+    };
+    
+    window.location.href = '/halamanutama';
+  }
+
+   /* Memuat data pengguna dari sessionStorage */
   loadUserData() {
+    if (localStorage.getItem('isLoggedOut') === 'true') {
+      window.location.href = '/halamanutama';
+      return;
+    }
+
     const userData = sessionStorage.getItem('currentUser');
     if (userData) {
       const user = JSON.parse(userData);
@@ -25,6 +102,7 @@ export class Tab2Page implements OnInit {
       this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
     }
   }
+
   /* Mengatur tampilan greeting berdasarjan waktu */
   setGreeting() {
     const hour = new Date().getHours();
@@ -38,14 +116,13 @@ export class Tab2Page implements OnInit {
       this.greeting = 'Selamat malam';
     }
   }
-  /* Menangani proses logout */
-  async logout() {
-    sessionStorage.clear();
-    localStorage.clear();
-    await this.router.navigate(['/halamanutama'], { replaceUrl: true });
-  }
+
   /* Load data */
   ionViewWillEnter() {
+    if (localStorage.getItem('isLoggedOut') === 'true') {
+      window.location.href = '/halamanutama';
+      return;
+    }
     this.loadUserData();
   }
 }
