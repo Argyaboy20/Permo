@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-halamanutama',
@@ -6,10 +8,15 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./halamanutama.page.scss'],
 })
 export class HalamanutamaPage implements OnInit {
-
-  constructor() { }
+  constructor(
+    private router: Router,
+    private location: Location
+  ) { }
 
   ngOnInit() {
   }
 
+  async navigateToDaftar() {
+    await this.router.navigateByUrl('/daftar');
+  }
 }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard, LoginGuard } from './guards/auth.guard';
+import { AuthGuard, LoginGuard, DaftarGuard } from './guards/auth.guard';
 
 const routes: Routes = [
 
@@ -19,9 +19,6 @@ const routes: Routes = [
     loadChildren: () => import('./tab2/tab2.module').then(m => m.Tab2PageModule),
     canActivate: [AuthGuard] // Prevents accessing dashboard when not logged in
   },
-
-
-
 
   {
     path: 'tab',
@@ -45,7 +42,8 @@ const routes: Routes = [
 
   {
     path: 'daftar',
-    loadChildren: () => import('./daftar/daftar.module').then( m => m.DaftarPageModule)
+    loadChildren: () => import('./daftar/daftar.module').then(m => m.DaftarPageModule),
+    canActivate: [DaftarGuard]
   },
 
   {

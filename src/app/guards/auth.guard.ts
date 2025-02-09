@@ -43,3 +43,15 @@ export class LoginGuard implements CanActivate {
     return true;
   }
 }
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DaftarGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(): boolean {
+    // Logika untuk memastikan halaman daftar bisa diakses
+    return true;
+  }
+}
