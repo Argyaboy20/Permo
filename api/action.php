@@ -26,6 +26,23 @@ switch ($aksi) {
         $pss = filter_var($postjson['pss'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
         $konfirmasi = filter_var($postjson['konfirmasi'], FILTER_SANITIZE_STRING, FILTER_FLAG_ENCODE_LOW);
 
+         // Validasi username
+         if (strlen($username) < 7) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Username minimal 7 karakter'
+            ]);
+            exit;
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9]+$/', $username)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Username hanya boleh berisi huruf dan angka'
+            ]);
+            exit;
+        }
+
         try {
             $sql = "INSERT INTO daftar (username,email,pss,konfirmasi) VALUES (:username, :email, :pss, :konfirmasi)";
             $stmt = $pdo->prepare($sql);
