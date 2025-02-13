@@ -54,53 +54,44 @@ export class LupaakunPage implements OnInit {
       const response = await this.postPvdr.postData(body, 'action.php')
         .pipe(
           tap(response => {
-            console.log('Raw server response:', response);
+            console.log('Server response:', response);
           }),
           catchError(error => {
-            console.error('API Error:', error);
+            console.error('Error details:', error);
             
-            if (error.error instanceof ErrorEvent) {
-              // Client-side error
-              return throwError(() => new Error(error.error.message));
+            // Handle network errors
+            if (!navigator.onLine) {
+              return throwError(() => new Error('Tidak ada koneksi internet. Mohon periksa koneksi Anda.'));
             }
             
-            // If we have a response body
+            // Handle API errors
             if (error.error) {
-              // Try to parse it if it's a string
               if (typeof error.error === 'string') {
                 try {
                   const parsedError = JSON.parse(error.error);
-                  return throwError(() => new Error(parsedError.message || 'Server error'));
+                  return throwError(() => new Error(parsedError.message || 'Terjadi kesalahan pada server'));
                 } catch (e) {
-                  // If we can't parse it, return the raw error
                   return throwError(() => new Error(error.error));
                 }
               }
-              // If it's already an object
-              if (error.error.message) {
-                return throwError(() => new Error(error.error.message));
-              }
+              return throwError(() => new Error(error.error.message || 'Terjadi kesalahan pada server'));
             }
             
-            return throwError(() => new Error('Gagal terhubung ke server. Silakan coba lagi nanti.'));
+            return throwError(() => new Error('Gagal menghubungi server. Mohon coba beberapa saat lagi.'));
           })
         )
         .toPromise();
 
-      console.log('Processed response:', response);
-
-      if (response && response.success) {
-        await this.presentToast(response.message || 'Informasi akun telah dikirim ke email');
+      if (response.success) {
+        await this.presentToast(response.message);
         this.email = '';
-      } else if (response && response.message) {
-        throw new Error(response.message);
       } else {
-        throw new Error('Gagal mengirim informasi ke email');
+        throw new Error(response.message || 'Gagal mengirim informasi akun');
       }
 
     } catch (error: any) {
-      console.error('Final error:', error);
-      await this.presentToast(error.message || 'Terjadi kesalahan. Silakan coba lagi nanti.');
+      console.error('Error sending email:', error);
+      await this.presentToast(error.message || 'Terjadi kesalahan saat mengirim email');
     } finally {
       this.isLoading = false;
       if (loading) {
@@ -117,7 +108,7 @@ export class LupaakunPage implements OnInit {
   async presentToast(message: string) {
     const toast = await this.toastController.create({
       message: message,
-      duration: 3000,
+      duration: 4000,
       position: 'bottom',
       cssClass: 'custom-toast'
     });

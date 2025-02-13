@@ -1,4 +1,7 @@
 <?php
+error_reporting(0);
+ini_set('display_errors', 0);
+
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
@@ -131,7 +134,7 @@ switch ($aksi) {
                     'success' => true,
                     'id' => $user['id'],
                     'username' => $user['username'],
-                    'email' => $user['email'],  // Add this line
+                    'email' => $user['email'],
                     'konfirmasi' => $user['konfirmasi']
                 ]);
             } else {
@@ -150,6 +153,14 @@ switch ($aksi) {
         break;
 
     case "lupa_akun":
+        if (empty($postjson['email'])) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Email tidak boleh kosong'
+            ]);
+            exit;
+        }
+
         $email = filter_var($postjson['email'], FILTER_SANITIZE_EMAIL);
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -161,55 +172,61 @@ switch ($aksi) {
         }
 
         try {
-            // Cari akun berdasarkan email
-            $sql = "SELECT username, konfirmasi FROM daftar WHERE email = :email";
-            $stmt = $pdo->prepare($sql);
+            // Check if email exists
+            $stmt = $pdo->prepare("SELECT * FROM daftar WHERE email = :email");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->execute();
-
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user) {
-                // Kirim email dengan informasi akun
-                $to = $email;
-                $subject = "Informasi Akun Pertanian Mobile";
-                $message = "Berikut adalah informasi akun Anda:\n\n";
-                $message .= "Username: " . $user['username'] . "\n";
-                $message .= "Password: " . $user['konfirmasi'] . "\n\n";
-                $message .= "Harap simpan informasi ini dengan aman." . "\n\n";
-                $message .= "Salam Hangat," . "\r\n";
-                $message .= "Tim IT Pertanian Mobile" . "\n\n";
+            if (!$user) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Email tidak terdaftar dalam sistem'
+                ]);
+                exit;
+            }
 
-                $headers = "From: noreply@pertanianmobile.com\r\n";
-                $headers .= "Reply-To: noreply@pertanianmobile.com\r\n";
-                $headers .= "X-Mailer: PHP/" . phpversion();
+            require_once 'send_email.php';
 
-                // Kirim email
-                $mail_sent = mail($to, $subject, $message, $headers);
+            // Log before sending email
+            error_log("Attempting to send email to: " . $email);
 
-                if ($mail_sent) {
-                    echo json_encode([
-                        'success' => true,
-                        'message' => 'Informasi akun telah dikirim ke email'
-                    ]);
-                } else {
-                    echo json_encode([
-                        'success' => false,
-                        'message' => 'Gagal mengirim email'
-                    ]);
-                }
+            $sendResult = sendPasswordRecoveryEmail($email, $user);
+
+            // Log after sending email
+            error_log("Email send result: " . json_encode($sendResult));
+
+            if ($sendResult === true) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Informasi akun telah dikirim ke email Anda. Silakan cek folder inbox email utama atau spam Anda.'
+                ]);
             } else {
                 echo json_encode([
                     'success' => false,
-                    'message' => 'Email tidak terdaftar'
+                    'message' => 'Gagal mengirim email: ' . $sendResult
                 ]);
             }
         } catch (PDOException $e) {
+            error_log("Database error: " . $e->getMessage());
             echo json_encode([
                 'success' => false,
-                'message' => 'Kesalahan sistem: ' . $e->getMessage()
+                'message' => 'Terjadi kesalahan pada database. Mohon coba beberapa saat lagi.'
+            ]);
+        } catch (Exception $e) {
+            error_log("General error: " . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ]);
         }
+        break;
+
+    default:
+        echo json_encode([
+            'success' => false,
+            'message' => 'Invalid action'
+        ]);
         break;
 
     case "getLatestUserData":
@@ -391,13 +408,6 @@ switch ($aksi) {
                 'message' => $e->getMessage()
             ]);
         }
-        break;
-
-    default:
-        echo json_encode([
-            'success' => false,
-            'message' => 'Invalid action'
-        ]);
         break;
 
     case "get_tumbuhan_detail":
