@@ -26,6 +26,12 @@
                     <small *ngIf="registerForm.getForm().get('username')?.errors?.['required']" class="text-danger">
                         Username harus diisi
                     </small>
+                    <small *ngIf="registerForm.getForm().get('username')?.errors?.['minlength']" class="text-danger">
+                        Username minimal 7 karakter.
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('username')?.errors?.['pattern']" class="text-danger">
+                        Username hanya boleh berisi huruf dan angka.
+                    </small>
                 </div>
             </div>
 
@@ -71,11 +77,23 @@
                     <small *ngIf="registerForm.getForm().get('pass')?.errors?.['required']" class="text-danger">
                         Password harus diisi
                     </small>
-                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['minlength']" class="text-danger">
-                        Password minimal 6 karakter
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['minLength']" class="text-danger">
+                        ✗ Password minimal 6 karakter
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['upperCase']" class="text-danger">
+                        ✗ Password harus mengandung minimal satu huruf kapital
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['lowerCase']" class="text-danger">
+                        ✗ Password harus mengandung minimal satu huruf kecil
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['number']" class="text-danger">
+                        ✗ Password harus mengandung minimal satu angka
+                    </small>
+                    <small *ngIf="registerForm.getForm().get('pass')?.errors?.['specialChar']" class="text-danger">
+                        ✗ Password harus mengandung minimal satu karakter spesial (&#64;&#36;&#33;&#37;&#42;&#63;&#38;)
                     </small>
                 </div>
-            </div>
+            </div>          
 
             <!-- Kolom Konfirmasi Password -->
             <div class="form-group">

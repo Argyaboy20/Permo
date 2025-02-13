@@ -37,8 +37,7 @@ body {
 }
 
 .form-group {
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .btn {
@@ -69,11 +68,15 @@ body {
 }
 
 .error-message {
-    color: red;
-    font-size: 0.8em;
-    margin-top: 5px;
-    margin-left: 10px;
-    margin-bottom: -20px;
+    padding: -5px 0;
+    margin-bottom: -18px;
+    
+    small {
+        display: block;
+        margin: 2px 0;
+        color: #dc3545;
+        font-size: 11px;
+    }
 }
 
 ion-textarea.ng-invalid.ng-touched {
@@ -119,6 +122,16 @@ ion-textarea.ng-invalid.ng-touched {
     .footer {
         font-size: 12px;
     }
+
+    .error-message {
+        padding: -3px 0;
+        margin-bottom: -7px;
+        
+        small {
+            margin: 1px 0;
+            font-size: 10px;
+        }
+    }
 }
 
 /* Small Mobile Devices (376px - 475px) */
@@ -138,6 +151,16 @@ ion-textarea.ng-invalid.ng-touched {
     ion-img {
         height: 90px !important;
         width: 90px !important;
+    }
+
+    .error-message {
+        padding: -4px 0;
+        margin-bottom: -5px;
+        
+        small {
+            margin: 1.5px 0;
+            font-size: 10.5px;
+        }
     }
 }
 
@@ -172,6 +195,16 @@ ion-textarea.ng-invalid.ng-touched {
         padding: 12px;
         font-size: 16px;
     }
+
+    .error-message {
+        padding: -5px 0;
+        margin-bottom: -3px;
+        
+        small {
+            margin: 2px 0;
+            font-size: 11px;
+        }
+    }
 }
 
 /* Large Tablets (769px - 999px) */
@@ -195,6 +228,16 @@ ion-textarea.ng-invalid.ng-touched {
 
     .form-group {
         margin-bottom: 30px;
+    }
+
+    .error-message {
+        padding: -5px 0;
+        margin-bottom: -3px;
+        
+        small {
+            margin: 2px 0;
+            font-size: 11px;
+        }
     }
 }
 
@@ -226,5 +269,15 @@ ion-textarea.ng-invalid.ng-touched {
 
     .footer {
         font-size: 14px;
+    }
+
+    .error-message {
+        padding: -5px 0;
+        margin-bottom: -18px;
+        
+        small {
+            margin: 2px 0;
+            font-size: 11px;
+        }
     }
 }
