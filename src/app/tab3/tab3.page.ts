@@ -18,6 +18,21 @@ interface CropRecommendation {
   lembabtanah: string;
 }
 
+// New interfaces for Nominatim response
+interface NominatimAddress {
+  village?: string;
+  suburb?: string;
+  town?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+}
+
+interface NominatimResponse {
+  address: NominatimAddress;
+  display_name: string;
+}
+
 
 @Component({
   selector: 'app-tab3',
@@ -36,11 +51,19 @@ export class Tab3Page implements OnInit, OnDestroy {
   isLoading: boolean = false;
   currentTime: string = '';
   private timeInterval: any;
+  weatherCondition: string = '';
+  weatherIcon: string = '';
 
   private readonly BASE_API_URL = environment.baseApiUrl;
   private readonly WEATHER_API_URL = 'https://api.weatherapi.com/v1/current.json';
   private readonly WEATHER_API_KEY = environment.weatherApiKey;
   private readonly API_TIMEOUT = 15000;
+  private readonly GEOCODING_API_URL = 'https://nominatim.openstreetmap.org/reverse';
+  private readonly LOCATION_OPTIONS = {
+    enableHighAccuracy: true,
+    timeout: 30000,
+    maximumAge: 0
+  };
 
   constructor(
     private http: HttpClient,
@@ -58,6 +81,22 @@ export class Tab3Page implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
+    }
+  }
+
+  private getWeatherCondition(temp: number): { condition: string, icon: string } {
+    if (temp >= 35) {
+      return { condition: 'Cerah Panas', icon: 'sunny' }; 
+    } else if (temp >= 30) {
+      return { condition: 'Cerah', icon: 'sunny-outline' };
+    } else if (temp >= 25) {
+      return { condition: 'Cerah Berawan', icon: 'partly-sunny-outline' };
+    } else if (temp >= 20) {
+      return { condition: 'Berawan', icon: 'cloudy-outline' };
+    } else if (temp >= 15) {
+      return { condition: 'Sejuk', icon: 'thermometer-outline' };
+    } else {
+      return { condition: 'Dingin', icon: 'snow-outline' };
     }
   }
 
@@ -112,18 +151,59 @@ export class Tab3Page implements OnInit, OnDestroy {
     }
   }
 
+  private async getDetailedLocation(latitude: number, longitude: number): Promise<string> {
+    try {
+      const params = new HttpParams()
+        .set('format', 'json')
+        .set('lat', latitude.toString())
+        .set('lon', longitude.toString())
+        .set('zoom', '18')
+        .set('addressdetails', '1');
+
+      const headers = new HttpHeaders()
+        .set('Accept', 'application/json')
+        .set('User-Agent', 'PertanianMobile');
+
+      const response = await this.http.get<NominatimResponse>(
+        this.GEOCODING_API_URL, 
+        { params, headers }
+      ).toPromise();
+      
+      if (response && response.address) {
+        const address = response.address;
+        const parts: string[] = [];
+
+        // Build detailed location string
+        if (address.village) parts.push(address.village);
+        if (address.suburb) parts.push(address.suburb);
+        if (address.town) parts.push(address.town);
+        if (address.city) parts.push(address.city);
+        if (address.state) parts.push(address.state);
+
+        return parts.length > 0 ? parts.join(', ') : response.display_name;
+      }
+      throw new Error('Location details not found');
+    } catch (error) {
+      console.error('Geocoding error:', error);
+      return this.locationName; // Fallback to weather API location
+    }
+  }
+
   async getCurrentLocation(event?: any) {
     try {
       this.errorMessage = '';
       this.isLoading = true;
 
-      const coordinates = await Geolocation.getCurrentPosition({
-        timeout: 30000,
-        enableHighAccuracy: true
-      });
+      const coordinates = await Geolocation.getCurrentPosition(this.LOCATION_OPTIONS);
 
       if (coordinates && coordinates.coords) {
-        await this.getWeatherData(coordinates.coords.latitude, coordinates.coords.longitude);
+        const { latitude, longitude } = coordinates.coords;
+        
+        // Get detailed location name first
+        this.locationName = await this.getDetailedLocation(latitude, longitude);
+        
+        // Then get weather data
+        await this.getWeatherData(latitude, longitude);
         this.updateCropRecommendations();
       } else {
         throw new Error('Koordinat tidak valid');
@@ -180,6 +260,18 @@ export class Tab3Page implements OnInit, OnDestroy {
               this.humidity = response.current.humidity;
               this.locationName = response.location.name;
               this.soilMoisture = Math.floor(Math.random() * (70 - 50 + 1)) + 50;
+
+               // Add null check before calling getWeatherCondition
+               if (this.temperature !== null) {
+                const weatherInfo = this.getWeatherCondition(this.temperature);
+                this.weatherCondition = weatherInfo.condition;
+                this.weatherIcon = weatherInfo.icon;
+              } else {
+                console.warn('Temperature is null');
+                this.weatherCondition = 'Tidak tersedia';
+                this.weatherIcon = 'help-outline';
+              }
+
               resolve();
             } else {
               const error = new Error('Data cuaca tidak lengkap');
@@ -224,82 +316,82 @@ export class Tab3Page implements OnInit, OnDestroy {
 
   private updateCropRecommendations() {
     if (this.temperature === null || this.humidity === null) {
-        console.error('Weather data is incomplete');
-        return;
+      console.error('Weather data is incomplete');
+      return;
     }
 
     const requestData = {
-        aksi: 'get_crop_recommendations',
-        temperature: this.temperature.toString(),
-        humidity: this.humidity.toString()
+      aksi: 'get_crop_recommendations',
+      temperature: this.temperature.toString(),
+      humidity: this.humidity.toString()
     };
 
     console.log('Sending request:', {
-        url: `${this.BASE_API_URL}/action.php`,
-        data: requestData
+      url: `${this.BASE_API_URL}/action.php`,
+      data: requestData
     });
 
     this.http.post<any>(`${this.BASE_API_URL}/action.php`, JSON.stringify(requestData), {
-        headers: new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        })
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      })
     }).pipe(
-        timeout(10000),
-        catchError((error: HttpErrorResponse) => {
-            console.error('API Error:', error);
-            let errorMessage = 'Terjadi kesalahan saat mengambil rekomendasi';
+      timeout(10000),
+      catchError((error: HttpErrorResponse) => {
+        console.error('API Error:', error);
+        let errorMessage = 'Terjadi kesalahan saat mengambil rekomendasi';
 
-            if (error.error instanceof ErrorEvent) {
-                errorMessage = `Error: ${error.error.message}`;
-            } else if (error.error && typeof error.error === 'object' && 'message' in error.error) {
-                errorMessage = error.error.message;
-            } else {
-                switch (error.status) {
-                    case 0:
-                        errorMessage = 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
-                        break;
-                    case 404:
-                        errorMessage = 'API endpoint tidak ditemukan.';
-                        break;
-                    case 500:
-                        errorMessage = 'Terjadi kesalahan pada server.';
-                        break;
-                    default:
-                        errorMessage = `Kesalahan: ${error.message}`;
-                }
-            }
-            return throwError(() => new Error(errorMessage));
-        })
-    ).subscribe({
-        next: (response) => {
-            console.log('API Response:', response);
-
-            if (response.success && Array.isArray(response.result)) {
-                this.suitableCrops = response.result.map((crop: any) => ({
-                    id: crop.id,
-                    datatumbuhan: crop.datatumbuhan,
-                    suhu: `${crop.suhu_min}-${crop.suhu_max}°C`,
-                    udara: `${crop.udara_min}-${crop.udara_max}%`,
-                    lembabtanah: crop.lembabtanah,
-                    suhu_min: parseFloat(crop.suhu_min),
-                    suhu_max: parseFloat(crop.suhu_max),
-                    udara_min: parseFloat(crop.udara_min),
-                    udara_max: parseFloat(crop.udara_max)
-                }));
-
-                console.log('Processed crops:', this.suitableCrops);
-            } else {
-                this.suitableCrops = [];
-                console.warn('No recommendations found:', response.message);
-            }
-        },
-        error: (error: Error) => {
-            this.handleError(error.message);
-            this.suitableCrops = [];
+        if (error.error instanceof ErrorEvent) {
+          errorMessage = `Error: ${error.error.message}`;
+        } else if (error.error && typeof error.error === 'object' && 'message' in error.error) {
+          errorMessage = error.error.message;
+        } else {
+          switch (error.status) {
+            case 0:
+              errorMessage = 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
+              break;
+            case 404:
+              errorMessage = 'API endpoint tidak ditemukan.';
+              break;
+            case 500:
+              errorMessage = 'Terjadi kesalahan pada server.';
+              break;
+            default:
+              errorMessage = `Kesalahan: ${error.message}`;
+          }
         }
+        return throwError(() => new Error(errorMessage));
+      })
+    ).subscribe({
+      next: (response) => {
+        console.log('API Response:', response);
+
+        if (response.success && Array.isArray(response.result)) {
+          this.suitableCrops = response.result.map((crop: any) => ({
+            id: crop.id,
+            datatumbuhan: crop.datatumbuhan,
+            suhu: `${crop.suhu_min}-${crop.suhu_max}°C`,
+            udara: `${crop.udara_min}-${crop.udara_max}%`,
+            lembabtanah: crop.lembabtanah,
+            suhu_min: parseFloat(crop.suhu_min),
+            suhu_max: parseFloat(crop.suhu_max),
+            udara_min: parseFloat(crop.udara_min),
+            udara_max: parseFloat(crop.udara_max)
+          }));
+
+          console.log('Processed crops:', this.suitableCrops);
+        } else {
+          this.suitableCrops = [];
+          console.warn('No recommendations found:', response.message);
+        }
+      },
+      error: (error: Error) => {
+        this.handleError(error.message);
+        this.suitableCrops = [];
+      }
     });
-}
+  }
 
   private async showLocationPermissionAlert() {
     const alert = await this.alertController.create({

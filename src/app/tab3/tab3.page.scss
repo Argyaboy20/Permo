@@ -28,28 +28,121 @@
   }
 }
 
-.weather-info {
-  .weather-icon {
-    text-align: center;
-    margin-bottom: 20px;
-    
-    img {
-      width: 100px;
-      height: 100px;
-    }
-    
-    p {
-      margin-top: 5px;
-      color: var(--ion-color-medium);
-      text-transform: capitalize;
-    }
-  }
-}
-
 ion-card {
   margin: 16px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+// Common styles for both cards
+.weather-info-card, .weather-condition-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 16px;
+  
+  ion-card-header {
+    padding: 16px;
+    
+    ion-card-title {
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  }
+  
+  ion-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+// Sunny animation
+@keyframes sunny {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// Partly sunny animation
+@keyframes partly-sunny {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+
+// Cloudy animation
+@keyframes cloudy {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(8px) translateY(-2px); }
+  100% { transform: translateX(0); }
+}
+
+// Cool/thermometer animation
+@keyframes cool {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+// Snow animation
+@keyframes snow {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(5px) rotate(180deg); }
+  100% { transform: translateY(0) rotate(360deg); }
+}
+
+// Specific styles for weather condition card
+.weather-condition-card {
+  ion-card-content {
+    align-items: center;
+    .weather-icon {
+      font-size: 160px; 
+      margin-bottom: 5px;
+      color: var(--ion-color-primary);
+      
+      // Apply animations based on weather condition
+      &[name="sunny"],
+      &[name="sunny-outline"] {
+        animation: sunny 8s linear infinite;
+        color: #FFB300;
+      }
+      
+      &[name="partly-sunny-outline"] {
+        animation: partly-sunny 4s ease-in-out infinite;
+        color: #FFB300;
+      }
+      
+      &[name="cloudy-outline"] {
+        animation: cloudy 4s ease-in-out infinite;
+        color: #7E8B9C;
+      }
+      
+      &[name="thermometer-outline"] {
+        animation: cool 2s ease-in-out infinite;
+        color: #4ECDE6;
+      }
+      
+      &[name="snow-outline"] {
+        animation: snow 3s ease-in-out infinite;
+        color: #89CFF0;
+      }
+    }
+    
+    h2 {
+      font-size: 1.5em;
+      font-weight: 500;
+      margin: 0;
+      color: var(--ion-color-dark);
+    }
+
+    .temperature {
+      font-size: 2.2em; 
+      font-weight: bold;
+      margin: 10px 0;
+      color: var(--ion-color-dark);
+    }
+  }
 }
 
 ion-item {
@@ -83,6 +176,7 @@ ion-fab-button::part(native):hover::after {
 ion-fab-button::part(native):active::after {
   background-color: #87d361;
 }
+
 
 /* Tiny Mobile Devices (320px - 375px) */
 @media screen and (min-width: 320px) and (max-width: 375px) {
@@ -128,6 +222,14 @@ ion-fab-button::part(native):active::after {
     ion-spinner {
       width: 40px;
       height: 40px;
+    }
+  }
+
+  .weather-condition-card {
+    ion-card-content {
+      .weather-icon {
+        font-size: 80px; 
+      }
     }
   }
 }
@@ -202,6 +304,14 @@ ion-fab-button::part(native):active::after {
       height: 60px;
     }
   }
+
+  .weather-condition-card {
+    ion-card-content {
+      .weather-icon {
+        font-size: 120px;
+      }
+    }
+  }
 }
 
 /* Large Tablets (769px - 999px) */
@@ -231,6 +341,14 @@ ion-fab-button::part(native):active::after {
     
     ion-card-subtitle {
       font-size: 18px;
+    }
+  }
+
+  .weather-condition-card {
+    ion-card-content {
+      .weather-icon {
+        font-size: 140px; 
+      }
     }
   }
 }
