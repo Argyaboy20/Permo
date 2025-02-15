@@ -1,33 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-gantipassword',
   templateUrl: './gantipassword.page.html',
   styleUrls: ['./gantipassword.page.scss'],
 })
-export class GantipasswordPage {
-  oldPassword: string = '';
-  newPassword: string = '';
+export class GantipasswordPage implements OnInit {
+  passwordForm!: FormGroup; // Add definite assignment assertion
   showOldPassword: boolean = false;
   showNewPassword: boolean = false;
   isLoading: boolean = false;
   userData: any;
   passwordErrors: any = {
-    uppercase: true,
-    lowercase: true,
-    number: true,
-    special: true,
-    length: true
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false,
+    length: false
   };
 
   constructor(
     private http: HttpClient,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private formBuilder: FormBuilder
   ) {
     // Load user data saat komponen diinisialisasi
     const userDataStr = sessionStorage.getItem('currentUser');
@@ -38,48 +38,86 @@ export class GantipasswordPage {
     }
   }
 
-  validatePassword(password: string): ValidationErrors | null {
-    const errors: ValidationErrors = {};
+  ngOnInit() {
+    this.initForm();
+  }
 
-    // Check for minimum length
-    if (password.length < 6) {
-      errors['length'] = true;
+  initForm() {
+    this.passwordForm = this.formBuilder.group({
+      oldPassword: ['', [Validators.required, Validators.minLength(6)]],
+      newPassword: ['', [Validators.required, this.passwordValidator()]]
+    });
+  }
+
+  passwordValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const password = control.value;
+      if (!password) {
+        return null;
+      }
+
+      const errors: ValidationErrors = {};
+
+      // Check for minimum length
+      if (password.length < 6) {
+        errors['length'] = true;
+      }
+
+      // Check for uppercase letters
+      if (!/[A-Z]/.test(password)) {
+        errors['uppercase'] = true;
+      }
+
+      // Check for lowercase letters
+      if (!/[a-z]/.test(password)) {
+        errors['lowercase'] = true;
+      }
+
+      // Check for numbers
+      if (!/[0-9]/.test(password)) {
+        errors['number'] = true;
+      }
+
+      // Check for special characters - simplified pattern
+      if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(password)) {
+        errors['special'] = true;
+      }
+
+      // Update the error state for UI display
+      this.updatePasswordErrors(errors);
+
+      return Object.keys(errors).length === 0 ? null : errors;
+    };
+  }
+
+  updatePasswordErrors(errors: ValidationErrors | null) {
+    if (!errors) {
+      this.passwordErrors = {
+        uppercase: false,
+        lowercase: false,
+        number: false,
+        special: false,
+        length: false
+      };
+    } else {
+      this.passwordErrors = {
+        uppercase: errors['uppercase'] || false,
+        lowercase: errors['lowercase'] || false,
+        number: errors['number'] || false,
+        special: errors['special'] || false,
+        length: errors['length'] || false
+      };
     }
-
-    // Check for uppercase letters
-    if (!/[A-Z]/.test(password)) {
-      errors['uppercase'] = true;
-    }
-
-    // Check for lowercase letters
-    if (!/[a-z]/.test(password)) {
-      errors['lowercase'] = true;
-    }
-
-    // Check for numbers
-    if (!/[0-9]/.test(password)) {
-      errors['number'] = true;
-    }
-
-    // Check for special characters - simplified pattern
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(password)) {
-      errors['special'] = true;
-    }
-
-    return Object.keys(errors).length === 0 ? null : errors;
   }
 
   onPasswordChange(event: any) {
-    const password = event.target.value;
-    const errors = this.validatePassword(password);
-
-    this.passwordErrors = {
-      uppercase: errors?.['uppercase'] || false,
-      lowercase: errors?.['lowercase'] || false,
-      number: errors?.['number'] || false,
-      special: errors?.['special'] || false,
-      length: errors?.['length'] || false
-    };
+    const password = event.detail.value;
+    const control = this.passwordForm.get('newPassword');
+    
+    if (control) {
+      // Re-validate when password changes
+      control.updateValueAndValidity();
+    }
   }
 
   toggleOldPasswordVisibility() {
@@ -90,30 +128,26 @@ export class GantipasswordPage {
     this.showNewPassword = !this.showNewPassword;
   }
 
+  oldPasswordSameAsNew() {
+    const oldPassword = this.passwordForm.get('oldPassword')?.value;
+    const newPassword = this.passwordForm.get('newPassword')?.value;
+    return oldPassword && newPassword && oldPassword === newPassword;
+  }
+
   async changePassword() {
-    if (this.isLoading) return;
+    if (this.isLoading || !this.passwordForm.valid) return;
+
+    const oldPassword = this.passwordForm.get('oldPassword')?.value;
+    const newPassword = this.passwordForm.get('newPassword')?.value;
 
     // Validasi dasar
-    if (!this.oldPassword || !this.newPassword) {
+    if (!oldPassword || !newPassword) {
       await this.showAlert('Peringatan', 'Mohon isi semua data');
       return;
     }
 
-    if (this.oldPassword === this.newPassword) {
+    if (oldPassword === newPassword) {
       await this.showAlert('Peringatan', 'Password baru harus berbeda dengan password lama');
-      return;
-    }
-
-    const passwordErrors = this.validatePassword(this.newPassword);
-    if (passwordErrors) {
-      let errorMessage = 'Password baru harus memenuhi kriteria berikut:\n';
-      if (passwordErrors['length']) errorMessage += '- Minimal 6 karakter\n';
-      if (passwordErrors['uppercase']) errorMessage += '- Mengandung huruf kapital\n';
-      if (passwordErrors['lowercase']) errorMessage += '- Mengandung huruf kecil\n';
-      if (passwordErrors['number']) errorMessage += '- Mengandung angka\n';
-      if (passwordErrors['special']) errorMessage += '- Mengandung karakter khusus\n';
-
-      await this.showAlert('Peringatan', errorMessage);
       return;
     }
 
@@ -128,8 +162,8 @@ export class GantipasswordPage {
 
     const data = {
       aksi: 'change_password',
-      old_password: this.oldPassword,
-      new_password: this.newPassword,
+      old_password: oldPassword,
+      new_password: newPassword,
       user_id: this.userData.id // Menambahkan user_id ke request
     };
 
@@ -146,8 +180,7 @@ export class GantipasswordPage {
         }
 
         await this.showAlert('Sukses', 'Password berhasil diubah');
-        this.oldPassword = '';
-        this.newPassword = '';
+        this.passwordForm.reset();
         this.router.navigate(['/tabs/tab2']);
       } else {
         await this.showAlert('Peringatan', response?.message || 'Gagal mengubah password');
