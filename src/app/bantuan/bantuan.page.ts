@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-bantuan',
@@ -14,23 +16,31 @@ export class BantuanPage implements OnInit {
   apiUrl = 'http://127.0.0.1/api/action.php';
   isSubmitting = false;
   validationErrors: { [key: string]: string } = {};
+  private backButtonSubscription: any;
 
-   /* Inisialisasi Form */
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private platform: Platform,
+    private location: Location
   ) {
     this.bantuanForm = this.fb.group({
       username: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       kendala: ['', Validators.required]
     });
+
+    // Prevent default browser refresh behavior
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('beforeunload', (e) => {
+        localStorage.setItem('lastRoute', '/bantuan');
+      });
+    }
   }
 
   ngOnInit() {
-     /* Menambahkan listener untuk perubahan nilai username dan email */
     this.bantuanForm.get('username')?.valueChanges.subscribe(() => {
       if (this.validationErrors['username']) {
         this.validateField('username');
@@ -42,7 +52,44 @@ export class BantuanPage implements OnInit {
         this.validateField('email');
       }
     });
+    
+    this.maintainRoute();
   }
+
+  ionViewWillEnter() {
+    // Ensure URL is correct when entering the page
+    this.location.replaceState('/bantuan');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab2']);
+    });
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  private maintainRoute() {
+    // Check if we're coming from a refresh
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (lastRoute === '/bantuan') {
+      this.location.replaceState('/bantuan');
+    }
+
+    // Set up refresh handling
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('load', () => {
+        if (lastRoute === '/bantuan') {
+          this.location.replaceState('/bantuan');
+        }
+      });
+    }
+  }
+
    /* Validasi input field dan pengecekan ke server */
   async validateField(fieldName: string) {
     const field = this.bantuanForm.get(fieldName);
