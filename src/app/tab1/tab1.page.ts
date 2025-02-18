@@ -23,68 +23,78 @@ export class Tab1Page implements OnInit {
   ) { }
 
   ngOnInit() {
-    /* Membersihkan storage */
-    localStorage.clear();
-    sessionStorage.clear();
+    // Check if user is already logged in
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      // Restore session storage from local storage
+      sessionStorage.setItem('currentUser', userData);
+      this.router.navigate(['/tabs/tab2'], { replaceUrl: true });
+      return;
+    }
   }
 
   ionViewWillEnter() {
-    // Subscribe to the back button event
-    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
-      if (sessionStorage.getItem('currentUser')) {
-        return;
-      } else {
-        this.router.navigate(['/halamanutama']);
+    // Check for existing login first
+    const userData = localStorage.getItem('currentUser');
+    if (userData) {
+      this.router.navigate(['/tabs/tab2'], { replaceUrl: true });
+      return;
+    }
+
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(9999, () => {
+      const userData = localStorage.getItem('currentUser');
+      if (userData) {
+        this.router.navigate(['/tabs/tab2']);
       }
     });
   }
 
   ionViewWillLeave() {
-    // Unsubscribe from the back button event when leaving the page
     if (this.backButtonSubscription) {
       this.backButtonSubscription.unsubscribe();
     }
   }
 
-  /* Membersihkan subscription */
   ngOnDestroy() {
     if (this.backButtonSubscription) {
       this.backButtonSubscription.unsubscribe();
     }
   }
 
-  /* Validasi input */
   async login() {
     if (!this.username?.trim() || !this.konfirmasi?.trim()) {
       this.presentToast('Mohon isi username dan password');
       return;
     }
-    /* Menampilkan loading */
+
     const loading = await this.loadingController.create({
       message: 'Mohon tunggu...',
       spinner: 'circles'
     });
     await loading.present();
-    /* Proses login */
+
     const body = {
       username: this.username,
       konfirmasi: this.konfirmasi,
       aksi: 'login'
     };
-    /* Request ke server */
+
     this.postPvdr.postData(body, 'action.php').subscribe({
       next: async (data: any) => {
         await loading.dismiss();
 
         if (data.success) {
-          // Store complete user data in sessionStorage
           const userData = {
             id: data.id,
             username: data.username,
             email: data.email,
             konfirmasi: data.konfirmasi
           };
+          
+          // Store in both session and local storage
           sessionStorage.setItem('currentUser', JSON.stringify(userData));
+          localStorage.setItem('currentUser', JSON.stringify(userData));
+          localStorage.setItem('isLoggedOut', 'false');
           
           this.presentToast('Login berhasil');
           this.router.navigate(['/tabs/tab2'], { replaceUrl: true });

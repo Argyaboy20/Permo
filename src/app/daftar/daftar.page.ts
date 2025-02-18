@@ -143,7 +143,7 @@ export class DaftarPage implements OnInit {
           localStorage.setItem('userKonfirmasi', this.konfirmasi);
 
           const toast = await this.toastController.create({
-            message: 'Pendaftaran berhasil!',
+            message: 'Pendaftaran berhasil! Harap ke menu Masuk untuk menyelesaikan pendaftaran',
             duration: 2000,
             position: 'bottom'
           });
