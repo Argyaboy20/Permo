@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ToastController, AlertController } from '@ionic/angular';
+import { ToastController, AlertController, Platform } from '@ionic/angular';
 import { PostProvider } from '../../provider/post-provider';
 
 @Component({
@@ -11,12 +11,14 @@ import { PostProvider } from '../../provider/post-provider';
 export class Tab4Page implements OnInit {
   userData: any = null;
   showPassword: boolean = false;
+  private backButtonSubscription: any;
 
   constructor(
     private router: Router,
     private postPvdr: PostProvider,
     public toastController: ToastController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private platform: Platform
   ) { }
 
   ngOnInit() {
@@ -25,6 +27,24 @@ export class Tab4Page implements OnInit {
 
   ionViewWillEnter() {
     this.loadUserDataFromServer();
+    
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab2']);
+    });
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
   }
 
   // Method baru untuk mengambil data user dari server

@@ -19,6 +19,7 @@ export class DaftarPage implements OnInit {
   pss: string = '';
   konfirmasi: string = '';
   registerForm!: RegisterPageForm;
+  private backButtonSubscription: any;
 
   constructor(
     private router: Router,
@@ -46,6 +47,18 @@ export class DaftarPage implements OnInit {
   ionViewWillEnter() {
     // Ensure URL is correct when entering the page
     this.location.replaceState('/daftar');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/halamanutama']);
+    });
+  }
+  
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
   }
 
   private maintainRoute() {

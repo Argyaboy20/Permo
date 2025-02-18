@@ -26,15 +26,24 @@ export class Tab1Page implements OnInit {
     /* Membersihkan storage */
     localStorage.clear();
     sessionStorage.clear();
+  }
 
-    /* Mengatur tombol ack */
+  ionViewWillEnter() {
+    // Subscribe to the back button event
     this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
       if (sessionStorage.getItem('currentUser')) {
         return;
       } else {
-        App.exitApp();
+        this.router.navigate(['/halamanutama']);
       }
     });
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
   }
 
   /* Membersihkan subscription */

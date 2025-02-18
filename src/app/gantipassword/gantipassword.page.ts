@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { Platform } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-gantipassword',
@@ -10,11 +12,12 @@ import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators }
   styleUrls: ['./gantipassword.page.scss'],
 })
 export class GantipasswordPage implements OnInit {
-  passwordForm!: FormGroup; // Add definite assignment assertion
+  passwordForm!: FormGroup;
   showOldPassword: boolean = false;
   showNewPassword: boolean = false;
   isLoading: boolean = false;
   userData: any;
+  private backButtonSubscription: any;
   passwordErrors: any = {
     uppercase: false,
     lowercase: false,
@@ -27,19 +30,62 @@ export class GantipasswordPage implements OnInit {
     private http: HttpClient,
     private alertController: AlertController,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private platform: Platform,
+    private location: Location
   ) {
-    // Load user data saat komponen diinisialisasi
     const userDataStr = sessionStorage.getItem('currentUser');
     if (userDataStr) {
       this.userData = JSON.parse(userDataStr);
     } else {
       this.router.navigate(['/tabs/tab1'], { replaceUrl: true });
     }
+
+    // Prevent default browser refresh behavior
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('beforeunload', (e) => {
+        localStorage.setItem('lastRoute', '/gantipassword');
+      });
+    }
   }
 
   ngOnInit() {
     this.initForm();
+    this.maintainRoute();
+  }
+
+  ionViewWillEnter() {
+    // Ensure URL is correct when entering the page
+    this.location.replaceState('/gantipassword');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab2']);
+    });
+  }
+
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  private maintainRoute() {
+    // Check if we're coming from a refresh
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (lastRoute === '/gantipassword') {
+      this.location.replaceState('/gantipassword');
+    }
+
+    // Set up refresh handling
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('load', () => {
+        if (lastRoute === '/gantipassword') {
+          this.location.replaceState('/gantipassword');
+        }
+      });
+    }
   }
 
   initForm() {
