@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  weatherApiKey: 'JP97rR0GHR5792BnhOOuKr0zryWT65VAfxZp06mX' // Ganti dengan API key Anda
+  baseApiUrl: 'http://127.0.0.1/api',
+  weatherApiKey: '8e0628f9f77d413d86822153250202' // Ganti dengan API key Anda
 };
