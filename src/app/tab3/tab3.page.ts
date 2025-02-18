@@ -5,6 +5,8 @@ import { LoadingController, AlertController, Platform } from '@ionic/angular';
 import { environment } from '../../environments/environment';
 import { catchError, timeout } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 interface CropRecommendation {
   id: number;
@@ -53,6 +55,7 @@ export class Tab3Page implements OnInit, OnDestroy {
   private timeInterval: any;
   weatherCondition: string = '';
   weatherIcon: string = '';
+  private backButtonSubscription: any;
 
   private readonly BASE_API_URL = environment.baseApiUrl;
   private readonly WEATHER_API_URL = 'https://api.weatherapi.com/v1/current.json';
@@ -69,18 +72,67 @@ export class Tab3Page implements OnInit, OnDestroy {
     private http: HttpClient,
     private loadingCtrl: LoadingController,
     private alertController: AlertController,
-    private platform: Platform
-  ) { }
+    private platform: Platform,
+    private router: Router,
+    private location: Location
+  ) {
+    // Prevent default browser refresh behavior
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('beforeunload', (e) => {
+        // Store current route
+        localStorage.setItem('lastRoute', '/tabs/tab3');
+      });
+    }
+  }
 
   async ngOnInit() {
     await this.platform.ready();
     await this.initializeLocation();
     this.startClock();
+    this.maintainRoute();
   }
 
   ngOnDestroy() {
     if (this.timeInterval) {
       clearInterval(this.timeInterval);
+    }
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  ionViewWillEnter() {
+    // Ensure URL is correct when entering the page
+    this.location.replaceState('/tabs/tab3');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab2']);
+    });
+  }
+  
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  private maintainRoute() {
+    // Check if we're coming from a refresh
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (lastRoute === '/tabs/tab3') {
+      // Force URL to stay as /tabs/tab3
+      this.location.replaceState('/tabs/tab3');
+    }
+
+    // Set up refresh handling
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('load', () => {
+        if (lastRoute === '/tabs/tab3') {
+          this.location.replaceState('/tabs/tab3');
+        }
+      });
     }
   }
 

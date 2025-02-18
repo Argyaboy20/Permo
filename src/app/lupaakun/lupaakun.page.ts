@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { PostProvider } from '../../provider/post-provider';
-import { ToastController, LoadingController } from '@ionic/angular';
+import { ToastController, LoadingController, Platform } from '@ionic/angular';
 import { catchError, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
+import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-lupaakun',
@@ -12,14 +14,63 @@ import { throwError } from 'rxjs';
 export class LupaakunPage implements OnInit {
   email: string = '';
   isLoading: boolean = false;
+  private backButtonSubscription: any;
 
   constructor(
     private postPvdr: PostProvider,
     private toastController: ToastController,
-    private loadingController: LoadingController
-  ) {}
+    private loadingController: LoadingController,
+    private platform: Platform,
+    private router: Router,
+    private location: Location
+  ) {
+    // Prevent default browser refresh behavior
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('beforeunload', (e) => {
+        // Store current route
+        localStorage.setItem('lastRoute', '/lupaakun');
+      });
+    }
+  }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.maintainRoute();
+  }
+
+  ionViewWillEnter() {
+    // Ensure URL is correct when entering the page
+    this.location.replaceState('/lupaakun');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab1']);
+    });
+  }
+  
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  private maintainRoute() {
+    // Check if we're coming from a refresh
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (lastRoute === '/lupaakun') {
+      // Force URL to stay as /lupaakun
+      this.location.replaceState('/lupaakun');
+    }
+
+    // Set up refresh handling
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('load', () => {
+        if (lastRoute === '/lupaakun') {
+          this.location.replaceState('/lupaakun');
+        }
+      });
+    }
+  }
 
   async kirimInformasi() {
     if (this.isLoading) return;

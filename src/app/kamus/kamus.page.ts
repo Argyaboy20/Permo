@@ -1,6 +1,8 @@
 import { Component, OnInit, Pipe } from '@angular/core';
 import { Router } from '@angular/router';
 import { pipe } from 'rxjs';
+import { Platform } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-kamus',
@@ -9,6 +11,8 @@ import { pipe } from 'rxjs';
 })
 export class KamusPage implements OnInit {
   searchText!: string;
+  private backButtonSubscription: any;
+  
   tumbuhan: any = [
     { id: 1, title: 'ALPUKAT', description: 'Nama latin: Persea Americana'},
     { id: 2, title: 'BAWANG MERAH', description: 'Nama latin:  Allium Ascalonicum'},
@@ -31,10 +35,56 @@ export class KamusPage implements OnInit {
   ];
 
   constructor(
-    private router: Router
-  ) { }
+    private router: Router,
+    private platform: Platform,
+    private location: Location
+  ) {
+    // Prevent default browser refresh behavior
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('beforeunload', (e) => {
+        // Store current route
+        localStorage.setItem('lastRoute', '/kamus');
+      });
+    }
+  }
 
   ngOnInit() {
+    this.maintainRoute();
+  }
+
+  ionViewWillEnter() {
+    // Ensure URL is correct when entering the page
+    this.location.replaceState('/kamus');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab2']);
+    });
+  }
+  
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  private maintainRoute() {
+    // Check if we're coming from a refresh
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (lastRoute === '/kamus') {
+      // Force URL to stay as /kamus
+      this.location.replaceState('/kamus');
+    }
+
+    // Set up refresh handling
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('load', () => {
+        if (lastRoute === '/kamus') {
+          this.location.replaceState('/kamus');
+        }
+      });
+    }
   }
 
    /* Routing Method */ 

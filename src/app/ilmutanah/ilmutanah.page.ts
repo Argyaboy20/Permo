@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Platform } from '@ionic/angular';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-ilmutanah',
@@ -8,6 +10,8 @@ import { Router } from '@angular/router';
 })
 export class IlmutanahPage implements OnInit {
   searchIsi!: string;
+  private backButtonSubscription: any;
+  
   tanah: any = [
     { id: 1, title: 'ALUVIAL', description: 'Nama latin: Alluvial Soil'},
     { id: 2, title: 'ANDOSOL', description: 'Nama latin:  Andosols'},
@@ -26,12 +30,57 @@ export class IlmutanahPage implements OnInit {
     { id: 15, title: 'VULKANIK', description: 'Nama latin: Volcanic Soil'},
   ];
 
-
   constructor(
-    private router: Router
-  ) { }
+    private router: Router,
+    private platform: Platform,
+    private location: Location
+  ) {
+    // Prevent default browser refresh behavior
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('beforeunload', (e) => {
+        // Store current route
+        localStorage.setItem('lastRoute', '/ilmutanah');
+      });
+    }
+  }
 
   ngOnInit() {
+    this.maintainRoute();
+  }
+
+  ionViewWillEnter() {
+    // Ensure URL is correct when entering the page
+    this.location.replaceState('/ilmutanah');
+
+    // Subscribe to the back button event
+    this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+      this.router.navigate(['/tabs/tab2']);
+    });
+  }
+  
+  ionViewWillLeave() {
+    // Unsubscribe from the back button event when leaving the page
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
+  }
+
+  private maintainRoute() {
+    // Check if we're coming from a refresh
+    const lastRoute = localStorage.getItem('lastRoute');
+    if (lastRoute === '/ilmutanah') {
+      // Force URL to stay as /ilmutanah
+      this.location.replaceState('/ilmutanah');
+    }
+
+    // Set up refresh handling
+    if (this.platform.is('desktop') || this.platform.is('mobileweb')) {
+      window.addEventListener('load', () => {
+        if (lastRoute === '/ilmutanah') {
+          this.location.replaceState('/ilmutanah');
+        }
+      });
+    }
   }
   
    /* Routing method */
