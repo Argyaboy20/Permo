@@ -16,6 +16,7 @@ import { KamusPage } from './kamus/kamus.page';
 import { IlmutanahPageRoutingModule } from './ilmutanah/ilmutanah-routing.module';
 import { IlmutanahPage } from './ilmutanah/ilmutanah.page';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   providers: [
     PostProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: LocationStrategy, useClass: HashLocationStrategy }
   ],
   bootstrap: [AppComponent, Tab2Page, FilterPipe, KamusPage, IlmutanahPage],
 })
