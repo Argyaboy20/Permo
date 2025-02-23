@@ -2,7 +2,7 @@
   "name": "PERMO",
   "version": "0.0.1",
   "author": "Ionic Framework",
-  "homepage": "https://Argyaboy20.github.io/Permo",
+  "homepage": "https://pertanian-mobile-c1537.web.app",
   "scripts": {
     "deploy": "ionic build --prod && gh-pages -d www",
     "ng": "ng",

@@ -13,8 +13,6 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "baseHref": "/Permo/",
-            "deployUrl": "/Permo/",
             "outputPath": "www",
             "index": "src/index.html",
             "main": "src/main.ts",
