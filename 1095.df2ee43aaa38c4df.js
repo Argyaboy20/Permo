@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkapp=self.webpackChunkapp||[]).push([[1095],{1095:(d,_,a)=>{a.r(_),a.d(_,{KamusPageModule:()=>P});var M=a(177),l=a(4341),s=a(4742),E=a(9054),n=a(4438);let P=(()=>{var u;class o{}return(u=o).\u0275fac=function(D){return new(D||u)},u.\u0275mod=n.$C({type:u}),u.\u0275inj=n.G2t({imports:[M.MD,l.YN,s.bv,E.$]}),o})()}}]);

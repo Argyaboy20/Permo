@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkapp=self.webpackChunkapp||[]).push([[4679],{4679:(d,l,a)=>{a.r(l),a.d(l,{IlmutanahPageModule:()=>P});var o=a(177),t=a(4341),M=a(4742),E=a(8510),u=a(4438);let P=(()=>{var n;class _{}return(n=_).\u0275fac=function(D){return new(D||n)},n.\u0275mod=u.$C({type:n}),n.\u0275inj=u.G2t({imports:[o.MD,t.YN,M.bv,E.R]}),_})()}}]);
