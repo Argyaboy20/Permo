@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "pertanian-mobile-c1537"
-  }
+    "default": "pertanian-mobile",
+    "production": "pertanian-mobile"
+  },
+  "targets": {},
+  "etags": {}
 }
