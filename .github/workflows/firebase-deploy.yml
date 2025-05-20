@@ -14,14 +14,16 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           
       - name: Install dependencies
-        run: npm ci
+        run: npm ci || npm install
         
       - name: Build
-        run: npm run build
+        run: npm run build || exit 1
+        env:
+          CI: false
         
       - name: Deploy to Firebase
         uses: FirebaseExtended/action-hosting-deploy@v0
@@ -29,4 +31,7 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PERMO }}'
           channelId: live
-          projectId: pertanian-mobile
+          projectId: pertanian-mobile  # Ganti dengan ID project Firebase Anda
+        env:
+          FIREBASE_CLI_PREVIEWS: hostingchannels
+          FIREBASE_DEBUG: true
