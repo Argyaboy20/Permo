@@ -17,7 +17,6 @@ const routes: Routes = [
   {
     path: 'tabs/tab2',
     loadChildren: () => import('./tab2/tab2.module').then(m => m.Tab2PageModule),
-    canActivate: [AuthGuard] // Prevents accessing dashboard when not logged in
   },
 
   {
