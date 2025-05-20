@@ -33,15 +33,15 @@
 
       <!-- Hyperlink -->
       <div class="note">Lupa password/username?</div>
-      <a class="hyper" href="lupaakun">Klik di sini</a>
+      <a class="hyper" [routerLink]="['/lupaakun']">Klik di sini</a>
     </div>
 
     <!-- Tombol Masuk -->
-    <ion-button type="submit" class="masuk" href="/tabs/tab2">MASUK</ion-button>
+    <ion-button type="submit" class="masuk" [routerLink]="['/tabs/tab2']">MASUK</ion-button>
             
     <div class="footer">
       <label for="akun?">Belum punya akun? </label>
-      <a href="daftar">Daftar Sekarang</a>
+      <a [routerLink]="['/daftar']">Daftar Sekarang</a>
     </div>
   </div>
 </body>
