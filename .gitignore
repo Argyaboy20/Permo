@@ -32,6 +32,7 @@ log.txt
 
 # Node
 /node_modules
+/build
 npm-debug.log
 yarn-error.log
 
@@ -44,6 +45,7 @@ yarn-error.log
 .settings/
 *.sublime-project
 *.sublime-workspace
+/environments
 
 # Visual Studio Code
 .vscode/*
