@@ -35,6 +35,6 @@ import { ReactiveFormsModule } from '@angular/forms';
     PostProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
-  bootstrap: [AppComponent, FilterPipe],
+  bootstrap: [AppComponent, Tab2Page, FilterPipe, KamusPage, IlmutanahPage],
 })
 export class AppModule {}
